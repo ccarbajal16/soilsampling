@@ -48,41 +48,38 @@ reference:
   - title: "Stratification"
     desc: "Functions for creating spatial strata"
     contents:
-    - ss_stratify
-    - ss_n_strata
-    - ss_area
-    - ss_relative_area
+    - starts_with("ss_stratify")
+    - starts_with("ss_n_strata")
+    - starts_with("ss_area")
+    - starts_with("ss_relative_area")
 
   - title: "Sampling Methods"
     desc: "Functions for generating sampling designs"
     contents:
-    - ss_random
-    - ss_stratified
-    - ss_coverage
-    - ss_coverage_equal_area
-    - ss_composite
-    - ss_maxvol
+    - starts_with("ss_random")
+    - starts_with("ss_stratified")
+    - starts_with("ss_coverage")
+    - starts_with("ss_composite")
+    - starts_with("ss_maxvol")
 
   - title: "Validation Metrics"
     desc: "Functions for assessing stratification quality"
     contents:
-    - ss_coverage_efficiency
-    - ss_distance_summary
+    - starts_with("ss_coverage_efficiency")
+    - starts_with("ss_distance_summary")
 
   - title: "Visualization"
     desc: "Functions for plotting stratification and samples"
     contents:
-    - ss_plot
-    - ss_plot_samples
+    - starts_with("ss_plot")
 
   - title: "Utilities"
     desc: "Helper functions for working with sampling objects"
     contents:
-    - ss_to_sf
-    - ss_to_data_frame
-    - ss_summary
-    - ss_get_samples
-    - ss_n_samples
+    - starts_with("ss_to_")
+    - starts_with("ss_summary")
+    - starts_with("ss_get_samples")
+    - starts_with("ss_n_samples")
 
 figures:
   dev: ragg::agg_png
