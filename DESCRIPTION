@@ -30,8 +30,12 @@ Imports:
 Suggests:
     testthat (>= 3.0.0),
     knitr (>= 1.36),
-    rmarkdown (>= 2.11)
+    rmarkdown (>= 2.11),
+    pkgdown
 License: GPL (>= 3)
+URL: https://ccarbajal16.github.io/soilsampling/,
+    https://github.com/ccarbajal16/soilsampling
+BugReports: https://github.com/ccarbajal16/soilsampling/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
