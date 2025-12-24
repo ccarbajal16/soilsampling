@@ -109,34 +109,34 @@ strata_custom <- ss_stratify(
   equal_area = FALSE,
   verbose = TRUE
 )
-#> 2025-12-24 03:04:28 | Optimizing configuration 1
+#> 2025-12-24 04:00:36 | Optimizing configuration 1
 #>     Current MSSD: 33.7103
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:28 | Optimizing configuration 2
+#> 2025-12-24 04:00:36 | Optimizing configuration 2
 #>     Current MSSD: 36.4875
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:28 | Optimizing configuration 3
+#> 2025-12-24 04:00:36 | Optimizing configuration 3
 #>     Current MSSD: 34.0026
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:28 | Optimizing configuration 4
+#> 2025-12-24 04:00:36 | Optimizing configuration 4
 #>     Current MSSD: 37.1821
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:28 | Optimizing configuration 5
+#> 2025-12-24 04:00:36 | Optimizing configuration 5
 #>     Current MSSD: 35.1059
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:29 | Optimizing configuration 6
+#> 2025-12-24 04:00:36 | Optimizing configuration 6
 #>     Current MSSD: 41.1071
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:29 | Optimizing configuration 7
+#> 2025-12-24 04:00:36 | Optimizing configuration 7
 #>     Current MSSD: 40.3993
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:29 | Optimizing configuration 8
+#> 2025-12-24 04:00:36 | Optimizing configuration 8
 #>     Current MSSD: 35.2979
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:29 | Optimizing configuration 9
+#> 2025-12-24 04:00:36 | Optimizing configuration 9
 #>     Current MSSD: 36.664
 #>     Best MSSD: 33.7103
-#> 2025-12-24 03:04:29 | Optimizing configuration 10
+#> 2025-12-24 04:00:36 | Optimizing configuration 10
 #>     Current MSSD: 42.7942
 #>     Best MSSD: 33.7103
 ```
