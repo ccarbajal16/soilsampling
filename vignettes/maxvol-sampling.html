@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="soilsampling Package Authors" />
+
+<meta name="date" content="2025-12-22" />
+
+<title>Maxvol Optimal Design Sampling</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Maxvol Optimal Design Sampling</h1>
+<h4 class="author">soilsampling Package Authors</h4>
+<h4 class="date">2025-12-22</h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The maxvol algorithm is a D-optimal design method for selecting
+sampling locations by maximizing the determinant (volume) of a feature
+submatrix. Unlike traditional probability-based sampling, maxvol takes a
+deterministic optimal design approach that selects locations with
+maximum diversity in feature space.</p>
+<p>This method is particularly effective when:</p>
+<ul>
+<li><strong>Features explain soil variability</strong>: Terrain
+attributes correlate with soil properties</li>
+<li><strong>Deterministic selection is preferred</strong>: Non-random,
+reproducible point placement</li>
+<li><strong>Few samples are available</strong>: Optimal coverage with
+minimal sampling effort</li>
+<li><strong>Model-based inference is planned</strong>: Kriging or
+machine learning predictions</li>
+</ul>
+</div>
+<div id="theoretical-background" class="section level2">
+<h2>Theoretical Background</h2>
+<div id="the-maximum-volume-principle" class="section level3">
+<h3>The Maximum Volume Principle</h3>
+<p>Given a matrix <span class="math inline">\(\mathbf{A}\)</span> of
+size <span class="math inline">\(m \times n\)</span> (where <span class="math inline">\(m\)</span> represents locations and <span class="math inline">\(n\)</span> represents features), the maxvol
+algorithm selects <span class="math inline">\(k\)</span> rows that form
+a submatrix <span class="math inline">\(\hat{\mathbf{A}}\)</span> with
+approximately maximum determinant:</p>
+<p><span class="math display">\[
+\hat{\mathbf{A}} = \arg\max_{\text{submatrix}} |\det(\mathbf{A}_k)|
+\]</span></p>
+<p>Geometrically, the determinant represents the volume of the <span class="math inline">\(n\)</span>-dimensional parallelepiped spanned by
+the row vectors. Maximizing this volume ensures that selected locations
+have maximal diversity in feature space.</p>
+</div>
+<div id="d-optimal-design" class="section level3">
+<h3>D-Optimal Design</h3>
+<p>The maxvol algorithm implements D-optimal experimental design, which
+minimizes the determinant of the covariance matrix of parameter
+estimates. In practical terms, D-optimal designs:</p>
+<ol style="list-style-type: decimal">
+<li>Spread samples across the feature space</li>
+<li>Minimize correlation between sample locations in feature space</li>
+<li>Maximize information for parameter estimation</li>
+</ol>
+</div>
+<div id="algorithm-steps" class="section level3">
+<h3>Algorithm Steps</h3>
+<ol style="list-style-type: decimal">
+<li><p><strong>Feature Matrix Construction</strong>: Create matrix <span class="math inline">\(\mathbf{A}\)</span> where each row represents a
+location and columns represent features (elevation, slope, TWI,
+etc.)</p></li>
+<li><p><strong>Normalization</strong> (optional): Standardize features
+to zero mean and unit variance</p></li>
+<li><p><strong>Rectangular Maxvol</strong>
+(<code>rect_maxvol</code>):</p>
+<ul>
+<li>Initialize with <span class="math inline">\(k\)</span> random
+rows</li>
+<li>Compute coefficient matrix <span class="math inline">\(\mathbf{B} =
+\mathbf{A} \cdot \hat{\mathbf{A}}^{-1}\)</span></li>
+<li>Iteratively swap rows to maximize volume</li>
+<li>Apply distance constraints if specified</li>
+</ul></li>
+<li><p><strong>Point Selection</strong>: Selected row indices correspond
+to sampling locations</p></li>
+</ol>
+</div>
+</div>
+<div id="basic-usage" class="section level2">
+<h2>Basic Usage</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(soilsampling)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Create a study area with terrain features</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>poly <span class="ot">&lt;-</span> <span class="fu">st_polygon</span>(<span class="fu">list</span>(<span class="fu">rbind</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">0</span>), <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">50</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>)))</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>study_area <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(<span class="at">geometry =</span> <span class="fu">st_sfc</span>(poly))</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># In practice, you would compute features from a DEM</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># For this example, we&#39;ll create a grid with synthetic features</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co"># Create fine grid to represent potential sampling locations</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">st_make_grid</span>(study_area, <span class="at">cellsize =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">2.5</span>), <span class="at">what =</span> <span class="st">&quot;centers&quot;</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>grid_sf <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(<span class="at">geometry =</span> grid)</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>grid_sf <span class="ot">&lt;-</span> grid_sf[<span class="fu">st_intersects</span>(grid_sf, study_area, <span class="at">sparse =</span> <span class="cn">FALSE</span>)[,<span class="dv">1</span>], ]</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co"># Add synthetic terrain features</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(grid_sf)</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>grid_sf<span class="sc">$</span>elevation <span class="ot">&lt;-</span> coords[,<span class="dv">2</span>] <span class="sc">+</span> <span class="dv">10</span> <span class="sc">*</span> <span class="fu">sin</span>(coords[,<span class="dv">1</span>] <span class="sc">/</span> <span class="dv">20</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(coords), <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>grid_sf<span class="sc">$</span>slope <span class="ot">&lt;-</span> <span class="fu">abs</span>(<span class="fu">cos</span>(coords[,<span class="dv">1</span>] <span class="sc">/</span> <span class="dv">15</span>) <span class="sc">*</span> <span class="dv">5</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(coords), <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>grid_sf<span class="sc">$</span>twi <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="sc">-</span> grid_sf<span class="sc">$</span>slope <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(coords), <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>grid_sf<span class="sc">$</span>aspect <span class="ot">&lt;-</span> (<span class="fu">atan2</span>(coords[,<span class="dv">2</span>] <span class="sc">-</span> <span class="dv">25</span>, coords[,<span class="dv">1</span>] <span class="sc">-</span> <span class="dv">50</span>) <span class="sc">+</span> pi) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> pi) <span class="sc">*</span> <span class="dv">360</span></span></code></pre></div>
+<div id="simple-maxvol-sampling" class="section level3">
+<h3>Simple Maxvol Sampling</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Select 20 sampling points using maxvol</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>samples_maxvol <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>, <span class="st">&quot;aspect&quot;</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">add_coords =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="fu">print</span>(samples_maxvol)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; NA </span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; NA </span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; Number of samples: 20</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co"># Plot results</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="fu">ss_plot_samples</span>(samples_maxvol)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="with-distance-constraint" class="section level3">
+<h3>With Distance Constraint</h3>
+<p>To avoid spatial clustering, apply a minimum distance constraint:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Select points with minimum 10-unit spacing</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>samples_constrained <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">min_dist =</span> <span class="dv">10</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="at">add_coords =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="fu">ss_plot_samples</span>(samples_constrained)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+<div id="feature-selection" class="section level2">
+<h2>Feature Selection</h2>
+<p>The choice of features is crucial for maxvol performance. Common
+terrain features for soil sampling:</p>
+<div id="topographic-features" class="section level3">
+<h3>Topographic Features</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Terrain features commonly used in pedometrics</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>features_topo <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="st">&quot;elevation&quot;</span>,      <span class="co"># Height above reference</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="st">&quot;slope&quot;</span>,          <span class="co"># Rate of elevation change</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="st">&quot;aspect&quot;</span>,         <span class="co"># Direction of slope</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="st">&quot;twi&quot;</span>             <span class="co"># Topographic Wetness Index</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># Other useful features (if computed from DEM):</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co"># - Curvature (plan, profile)</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># - Flow accumulation</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co"># - Closed depressions</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co"># - Topographic Position Index (TPI)</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co"># - Terrain Ruggedness Index (TRI)</span></span></code></pre></div>
+</div>
+<div id="adding-coordinates" class="section level3">
+<h3>Adding Coordinates</h3>
+<p>Including coordinates as features balances feature space and
+geographic space:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Without coordinates: purely feature-based</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>samples_no_coords <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">add_coords =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co"># With coordinates: balances features and geography</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>samples_with_coords <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>),</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="at">add_coords =</span> <span class="cn">TRUE</span>,  <span class="co"># Default</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>)</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;Without Coordinates&quot;</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samples_no_coords<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;With Coordinates&quot;</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samples_with_coords<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAAvVBMVEUAAAAAADoAAGYAAP8AOjoAOmYAOpAAZpAAZrY6AAA6OgA6Ojo6OmY6ZpA6ZrY6kJA6kLY6kNtmAABmOgBmOjpmkLZmkNtmtttmtv+QOgCQOjqQZgCQZjqQkGaQkLaQtpCQttuQtv+Q29uQ2/+2ZgC2Zjq2ZpC2kDq2kGa225C227a229u22/+2/7a2/9u2///bkDrbkGbbtmbbtpDb27bb29vb2//b////AAD/tmb/25D/27b//7b//9v////Kb8ptAAAACXBIWXMAAA7DAAAOwwHHb6hkAAALzUlEQVR4nO3aC3dbV1qAYSWZlKTMFJwCbWEGBki5FhpmBhJPGv3/n8XRkWzLbkJt9lbyqut51mrspLL0fTuvdXM2WwjbfOoB4P8iUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZS0Uwb6w4vNZ6+32z8+3zz6x+323Tebx//5zfon7/7p++321fqnP2G95NXnv/t8s9n88rsHTPBy8/j7d/vbvMcNnJkHH+9ZHuApA92d2TL95XIqF+t5Ptvv+vbLx/cMdH/JvR++3Oxd3H+Cnzzf4xs4Nw893vM8wJM+xO8P6eVyJs/W7/TDybzc3DfQ/SVXyzFd+freAxx9/f/zAmUPO94zPcCTBnq5+25dD2bZYvnN1+s34+5Elz9YTvAfvt1snu6P8fd/sdn84i9336j7lZc7hIvt4ZLrBV4tF/3t8h27XNv6/XzzBcefL1f6d19uHn+3ffft8+XyN3cAt27t97v7kl8e/nJ3N/Bu+V+Pvliv7L+Wh8FHv3rIw+An84Dj3Z7tAZ400N3DzvLLo9/svpt339K3T3BvDfDwm93JvT/Qw+PZ8slff/E/t7/g+PNXh8+u7y5uzndvd7dyef3p4QaWG9t5+v31dZ3F/er9j3d7vgd40kDX1S43j//1+Vrbuvay69Vj0Oaz73a/XqyPT/szuLgV6NEDyPqXceP4C44/31/pf++O8Nnr3bf10fk+Pdza8gd/8vrwkLi/gZe7u4z1D3Y383r7uwc9T/tk7n28O+d6gKd9m+nl+q28e/K+/re9c4Jf3wlx/fD+QG+eYl1f8e0v2H94dXiCdX0lR+f79Xot+7+lP/zL5+szt/Vy+9taLvL4++UCT//9pEcy032Pd+dcD/C0gS7fh199swy/jP4fL/bfe0cnuHu0WL+xr14nvto/avx0oMdfcOuLDy8N1r+u7fGL0KNb27779f5h6Op8l+u+eszaP7JdPTWru+fxrs71AE8b6DL5n71YFrtcnno/Xz5+4ASvjnH3RP/wf48fQHZuP0Idf8GtLz6c79Wfvfd8d2f49G//8OL6fA9PqdYnVW/378U8+vuTnssk9zze1bke4GkDXZ887x8D/nR9sXfve9C7gR49x19eId7jDuCzq3cEfnS++6v+4cXxHcDRGy9vf/P51YuHunse7+pcD/DEP+p8uR91vePff3zvCd5+FnR4oXgr0Dvvknz4KdT+3b/3PIW6vrXLq2dTFzdPoZ7dmvrd35zHy/j7Hu/qTA/wxIHu3nS4uPl4vOvxCd55HXmxHuPFrXebb7/P/OEXofsv2L8Ifbn5wB3AZ693N/Ds5r3uR19t375YXxNv/nz3s5jzuAe97/GuzvQATxzo7unz7t7/cn8s+10vD2/UHZ3g0Ttx18+4L7aHS+6v6vondV9sb3/B7bfxDkW//NHbeLeeQl09x788fhtvd4lvb97tOwP3Pd7VeR7giQNdHyP2Hw//omH3SLT7icR3t09w/VnGX61f88flIH/1b+ur+P0lD9d1+LcOhzcxjr7g6PPr8333z883v/jqwy9Cn/721dVPQJYbePvr5W96/9OPh/+Dik/o3se7OssD9M/tSBMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZQ0gZImUNIESppASRMoaQIlTaCkCZS0EwW6+dk4zfk81Kc+hXkevPkpjvNndMccWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxjiBThZZJDLGOIFOFlkkMsY4gU4WWSQyxrhOoG/evNme+pePIFLGZvvkyZPt9F9Wd357GlfXnwn0zUdwmtHvLPIxbuSnbZ6cwnrVd357GtfXXwn0Y/T5UQqNBHqSPtdkfhTsCcffCnQ6gU4cfyvQ6QQ6cfxtJ9CP8hx08zGc5nwe6jTPQdcF7/z2NG6u/8Gbn+I4d978PF7FZzz5ebyKf7DIPQS8n0BJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlDSBkiZQ0gRKmkBJEyhpAiVNoKQJlLT/BS9Du5PVtIDfAAAAAElFTkSuQmCC" /><!-- --></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+</div>
+</div>
+<div id="feature-normalization" class="section level2">
+<h2>Feature Normalization</h2>
+<p>Normalization is important when features have different scales:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Check feature scales</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">summary</span>(grid_sf[, <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>)])</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;    elevation          slope              twi            geometry  </span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;  Min.   :-13.53   Min.   :0.01217   Min.   : 1.527   POINT  :800  </span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;  1st Qu.: 13.97   1st Qu.:2.05764   1st Qu.: 5.293   epsg:NA:  0  </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;  Median : 26.67   Median :3.56345   Median : 6.490                </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  Mean   : 26.33   Mean   :3.36774   Mean   : 6.644                </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.: 38.62   3rd Qu.:4.58750   3rd Qu.: 7.998                </span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;  Max.   : 61.51   Max.   :8.34239   Max.   :11.528</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co"># Without normalization: features with larger variance dominate</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>samples_raw <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">15</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">add_coords =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co"># With normalization: equal weight to all features</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>samples_norm <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">15</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>),</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span>,  <span class="co"># Recommended</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>  <span class="at">add_coords =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>)</span></code></pre></div>
+<p><strong>Recommendation</strong>: Always use
+<code>normalize = TRUE</code> unless all features are already on similar
+scales.</p>
+</div>
+<div id="distance-constraint-tuning" class="section level2">
+<h2>Distance Constraint Tuning</h2>
+<p>The distance constraint prevents spatial clustering when features
+vary locally:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># No distance constraint</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>samples_no_dist <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">min_dist =</span> <span class="cn">NULL</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co"># Small distance constraint</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>samples_small_dist <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>),</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>  <span class="at">min_dist =</span> <span class="dv">5</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>)</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co"># Large distance constraint</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>samples_large_dist <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>),</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>  <span class="at">min_dist =</span> <span class="dv">15</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>)</span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;No constraint&quot;</span>)</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samples_no_dist<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;min_dist = 5&quot;</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samples_small_dist<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;min_dist = 15&quot;</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samples_large_dist<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div id="choosing-min_dist" class="section level3">
+<h3>Choosing min_dist</h3>
+<p>Guidelines for setting the distance constraint:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Study area size</strong>: Larger areas → larger
+<code>min_dist</code></li>
+<li><strong>Terrain ruggedness</strong>: More rugged → smaller
+<code>min_dist</code> (features vary locally)</li>
+<li><strong>Sample size</strong>: More samples → smaller
+<code>min_dist</code></li>
+<li><strong>Soil mapping unit size</strong>: Use typical minimum mapping
+unit diameter</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Rule of thumb: min_dist = (study area extent) / (2 * sqrt(n_samples))</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(study_area)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>extent <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((bbox<span class="sc">$</span>xmax <span class="sc">-</span> bbox<span class="sc">$</span>xmin) <span class="sc">*</span> (bbox<span class="sc">$</span>ymax <span class="sc">-</span> bbox<span class="sc">$</span>ymin))</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>n_samples <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>suggested_min_dist <span class="ot">&lt;-</span> extent <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> <span class="fu">sqrt</span>(n_samples))</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Suggested min_dist:&quot;</span>, <span class="fu">round</span>(suggested_min_dist, <span class="dv">1</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; Suggested min_dist: 7.9</span></span></code></pre></div>
+</div>
+</div>
+<div id="comparison-with-other-methods" class="section level2">
+<h2>Comparison with Other Methods</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co"># Maxvol sampling</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>samp_maxvol <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  grid_sf,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">25</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="at">min_dist =</span> <span class="dv">8</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>)</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co"># Spatial coverage (k-means based)</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>samp_coverage <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co"># Simple random</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>samp_random <span class="ot">&lt;-</span> <span class="fu">ss_random</span>(study_area, <span class="at">n =</span> <span class="dv">25</span>)</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;Maxvol (Feature-based)&quot;</span>)</span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samp_maxvol<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;Coverage (Geography-based)&quot;</span>)</span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samp_coverage<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;Random&quot;</span>)</span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samp_random<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div id="key-differences" class="section level3">
+<h3>Key Differences</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Selection Criterion</th>
+<th>Randomness</th>
+<th>Distance Control</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Maxvol</strong></td>
+<td>Feature diversity</td>
+<td>Deterministic</td>
+<td>Optional constraint</td>
+</tr>
+<tr class="even">
+<td><strong>Coverage</strong></td>
+<td>Geographic spread</td>
+<td>Deterministic</td>
+<td>Stratum-based</td>
+</tr>
+<tr class="odd">
+<td><strong>Stratified</strong></td>
+<td>Geographic + random</td>
+<td>Random</td>
+<td>Stratum-based</td>
+</tr>
+<tr class="even">
+<td><strong>Random</strong></td>
+<td>Uniform probability</td>
+<td>Random</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="practical-workflow" class="section level2">
+<h2>Practical Workflow</h2>
+<div id="step-1-prepare-feature-data" class="section level3">
+<h3>Step 1: Prepare Feature Data</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">library</span>(terra)  <span class="co"># For raster processing</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co"># Load DEM</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>dem <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">&quot;path/to/dem.tif&quot;</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co"># Compute terrain features</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>slope <span class="ot">&lt;-</span> <span class="fu">terrain</span>(dem, <span class="st">&quot;slope&quot;</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>aspect <span class="ot">&lt;-</span> <span class="fu">terrain</span>(dem, <span class="st">&quot;aspect&quot;</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>tpi <span class="ot">&lt;-</span> <span class="fu">terrain</span>(dem, <span class="st">&quot;TPI&quot;</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>tri <span class="ot">&lt;-</span> <span class="fu">terrain</span>(dem, <span class="st">&quot;TRI&quot;</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co"># Compute TWI (requires flow direction)</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co"># ... (depends on your workflow)</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co"># Stack features</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>features_stack <span class="ot">&lt;-</span> <span class="fu">c</span>(dem, slope, aspect, tpi, tri)</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co"># Convert to points</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>feature_points <span class="ot">&lt;-</span> <span class="fu">as.points</span>(features_stack)</span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>feature_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(feature_points)</span></code></pre></div>
+</div>
+<div id="step-2-run-maxvol" class="section level3">
+<h3>Step 2: Run Maxvol</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Select sampling points</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  feature_sf,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">50</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">c</span>(<span class="st">&quot;elevation&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;aspect&quot;</span>, <span class="st">&quot;tpi&quot;</span>, <span class="st">&quot;tri&quot;</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="at">min_dist =</span> <span class="dv">100</span>,  <span class="co"># meters, adjust for your study</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="at">add_coords =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># Check convergence</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>samples<span class="sc">$</span>converged) {</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">&quot;Maxvol did not converge. Consider increasing max_iters.&quot;</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="step-3-export-results" class="section level3">
+<h3>Step 3: Export Results</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Get coordinates</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">ss_to_data_frame</span>(samples)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co"># Export for field work</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="fu">write.csv</span>(coords, <span class="st">&quot;maxvol_sampling_points.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co"># Export as GeoPackage</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="fu">st_write</span>(<span class="fu">ss_to_sf</span>(samples), <span class="st">&quot;maxvol_points.gpkg&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="advanced-usage" class="section level2">
+<h2>Advanced Usage</h2>
+<div id="custom-feature-matrix" class="section level3">
+<h3>Custom Feature Matrix</h3>
+<p>You can provide your own feature matrix:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Create custom feature matrix</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>coords_mat <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(grid_sf)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>n_loc <span class="ot">&lt;-</span> <span class="fu">nrow</span>(coords_mat)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>custom_features <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    grid_sf<span class="sc">$</span>elevation,</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>    grid_sf<span class="sc">$</span>slope,</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>    grid_sf<span class="sc">$</span>twi</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>  ),</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>)</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="fu">colnames</span>(custom_features) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;elev&quot;</span>, <span class="st">&quot;slope&quot;</span>, <span class="st">&quot;twi&quot;</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co"># Use with maxvol</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>samples_custom <span class="ot">&lt;-</span> <span class="fu">ss_maxvol</span>(</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>  custom_features,</span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">20</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>  <span class="at">coords =</span> coords_mat,</span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a>  <span class="at">normalize =</span> <span class="cn">TRUE</span></span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="integration-with-existing-functions" class="section level3">
+<h3>Integration with Existing Functions</h3>
+<p>Maxvol can complement existing sampling schemes:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Use maxvol to densify an existing sample</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co"># Suppose we have prior samples</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>prior_samples <span class="ot">&lt;-</span> <span class="fu">ss_random</span>(study_area, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co"># Use stratification to avoid prior samples</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co"># Then use maxvol for additional points</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co"># (This would require custom code to exclude prior locations)</span></span></code></pre></div>
+</div>
+</div>
+<div id="performance-considerations" class="section level2">
+<h2>Performance Considerations</h2>
+<div id="algorithm-complexity" class="section level3">
+<h3>Algorithm Complexity</h3>
+<ul>
+<li>Time complexity: <span class="math inline">\(O(k \cdot m \cdot n^2
+\cdot \text{iterations})\)</span></li>
+<li>Space complexity: <span class="math inline">\(O(m \cdot
+n)\)</span></li>
+</ul>
+<p>where: - <span class="math inline">\(m\)</span> = number of candidate
+locations - <span class="math inline">\(n\)</span> = number of features
+- <span class="math inline">\(k\)</span> = number of samples to
+select</p>
+</div>
+<div id="computational-tips" class="section level3">
+<h3>Computational Tips</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># For large datasets, reduce candidate locations</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co"># Option 1: Coarser grid</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>grid_coarse <span class="ot">&lt;-</span> <span class="fu">st_make_grid</span>(study_area, <span class="at">cellsize =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>), <span class="at">what =</span> <span class="st">&quot;centers&quot;</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co"># Option 2: Pre-filter using simpler criteria</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co"># (e.g., remove unsuitable areas)</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co"># Option 3: Sample from candidate pool</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>candidate_sample <span class="ot">&lt;-</span> grid_sf[<span class="fu">sample</span>(<span class="fu">nrow</span>(grid_sf), <span class="dv">500</span>), ]</span></code></pre></div>
+</div>
+</div>
+<div id="when-to-use-maxvol" class="section level2">
+<h2>When to Use Maxvol</h2>
+<p>✅ <strong>Use maxvol when:</strong></p>
+<ul>
+<li>Features strongly correlate with target variable</li>
+<li>You want deterministic, reproducible sampling</li>
+<li>Feature diversity is more important than geographic spread</li>
+<li>Sample size is limited</li>
+<li>You’re doing model-based inference (kriging, ML)</li>
+</ul>
+<p>❌ <strong>Don’t use maxvol when:</strong></p>
+<ul>
+<li>You need probability-based sampling for unbiased estimation</li>
+<li>Features don’t explain the target variable well</li>
+<li>Pure geographic coverage is the goal</li>
+<li>You need strictly random samples</li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Petrovskaia, A., Ryzhakov, G., &amp; Oseledets, I. (2021).
+Optimal soil sampling design based on the maxvol algorithm.
+<em>Geoderma</em>, 383, 114733. DOI:
+10.1016/j.geoderma.2020.114733</p></li>
+<li><p>Goreinov, S. A., Oseledets, I. V., Savostyanov, D. V.,
+Tyrtyshnikov, E. E., &amp; Zamarashkin, N. L. (2010). How to find a good
+submatrix. In <em>Matrix Methods: Theory, Algorithms And
+Applications</em> (pp. 247-256). World Scientific.</p></li>
+<li><p>Fedorov, V. (1972). <em>Theory Of Optimal Experiments</em>.
+Academic Press.</p></li>
+<li><p>Walvoort, D.J.J., Brus, D.J., and de Gruijter, J.J. (2010). An R
+package for spatial coverage sampling and random sampling from compact
+geographical strata by k-means. <em>Computers &amp; Geosciences</em>,
+36, 1261-1267.</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

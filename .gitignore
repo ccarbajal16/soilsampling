@@ -1,0 +1,50 @@
+# R package build artifacts
+*.Rproj.user
+*.Rhistory
+*.RData
+*.Ruserdata
+*.tar.gz
+*.zip
+
+# Package build directories
+/src/*.o
+/src/*.so
+/src/*.dll
+
+# Documentation
+/man/*.Rd
+!/man/figures/
+/docs/
+
+# pkgdown site
+docs/
+pkgdown/
+
+# Byte-compiled files
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*~
+
+# Test artifacts
+tests/testthat/_snaps/
+*.Rout
+*.Rout.fail
+
+# Coverage
+covr/
+*.gcov
+
+# Compiled R
+*.rds
+
+# Local configuration
+.Renviron
+.Rprofile.local

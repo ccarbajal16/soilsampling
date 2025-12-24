@@ -1,0 +1,40 @@
+Package: soilsampling
+Type: Package
+Title: Soil Sampling Design Methods Including Spatial Coverage, Simple Random,
+        Stratified Sampling and Maxvol Optimal Design Sampling
+Version: 0.1.0
+Date: 2025-12-15
+Authors@R: c(
+        person(
+            given = "Carlos",
+            family = "Carbajal",
+            email = "ccarbajal@educagis.com",
+            role = c("aut", "cre")))
+Description: Provides methods for designing soil sampling schemes including
+        spatial coverage sampling using k-means clustering, simple random
+        sampling, stratified random sampling, and maxvol optimal design sampling.
+        The maxvol method implements D-optimal experimental design based on maximum
+        volume criterion for feature-based sample selection. Includes validation
+        metrics to assess stratification quality through coverage efficiency
+        (uniformity of cell distribution) and distance statistics. The package uses
+        sf for spatial operations and does not require Java or the sp package.
+        Spatial coverage sampling is based on Walvoort et al. (2010)
+        <doi:10.1016/j.cageo.2010.04.005>. Maxvol sampling is based on Petrovskaia
+        et al. (2021) <doi:10.1016/j.geoderma.2020.114733>.
+Depends: R (>= 4.1.0)
+Imports:
+    sf (>= 1.0-12),
+    ggplot2 (>= 3.3.0),
+    stats,
+    methods
+Suggests:
+    testthat (>= 3.0.0),
+    knitr (>= 1.36),
+    rmarkdown (>= 2.11)
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr
+Config/testthat/edition: 3

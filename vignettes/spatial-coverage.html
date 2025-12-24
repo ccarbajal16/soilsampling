@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="soilsampling Package Authors" />
+
+<meta name="date" content="2025-12-22" />
+
+<title>Spatial Coverage Sampling Methods</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Spatial Coverage Sampling Methods</h1>
+<h4 class="author">soilsampling Package Authors</h4>
+<h4 class="date">2025-12-22</h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Spatial coverage sampling aims to provide optimal spatial
+distribution of sampling points across a study area. The
+<strong>soilsampling</strong> package implements spatial coverage using
+k-means clustering to create compact geographical strata, with samples
+placed at stratum centroids.</p>
+<p>This approach is particularly effective for:</p>
+<ul>
+<li><strong>Model-based inference</strong>: Kriging and spatial
+interpolation</li>
+<li><strong>Soil mapping</strong>: Creating detailed soil maps</li>
+<li><strong>Environmental monitoring</strong>: Capturing spatial
+variability</li>
+<li><strong>Resource assessment</strong>: Estimating spatial
+distributions</li>
+</ul>
+</div>
+<div id="theoretical-background" class="section level2">
+<h2>Theoretical Background</h2>
+<p>The spatial coverage method is based on:</p>
+<ol style="list-style-type: decimal">
+<li><strong>K-means clustering</strong> in geographic space to create
+compact strata</li>
+<li><strong>Stratification</strong> that minimizes Mean Squared Shortest
+Distance (MSSD)</li>
+<li><strong>Centroid sampling</strong> for optimal spatial coverage</li>
+</ol>
+<p>The k-means algorithm partitions the study area into compact spatial
+strata by minimizing:</p>
+<p><span class="math display">\[
+\text{MSSD} = \frac{1}{m}\sum_{i=1}^{m} \min_k d^2(x_i, c_k)
+\]</span></p>
+<p>where <span class="math inline">\(x_i\)</span> are grid cell centers,
+<span class="math inline">\(c_k\)</span> are stratum centroids, and
+<span class="math inline">\(d\)</span> is Euclidean distance (or
+haversine distance for lat/lon coordinates).</p>
+</div>
+<div id="basic-usage" class="section level2">
+<h2>Basic Usage</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(soilsampling)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Create a study area</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>poly <span class="ot">&lt;-</span> <span class="fu">st_polygon</span>(<span class="fu">list</span>(<span class="fu">rbind</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">0</span>), <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">50</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>)))</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>study_area <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(<span class="at">geometry =</span> <span class="fu">st_sfc</span>(poly))</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code></pre></div>
+<div id="direct-coverage-sampling" class="section level3">
+<h3>Direct Coverage Sampling</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Create 25 coverage samples in one step</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">print</span>(samples)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; Spatial Coverage Sampling </span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; ========================= </span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Number of samples: 25 </span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; Number of strata: 25</span></span></code></pre></div>
+</div>
+<div id="two-step-approach" class="section level3">
+<h3>Two-Step Approach</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Step 1: Create stratification</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>strata <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">print</span>(strata)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; Soil Sampling Stratification</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; ============================</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Number of strata: 25 </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; Number of cells: 2485 </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; Cell size: 1.41 x 1.41 </span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; MSSD: 42.7634 </span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; Converged: TRUE </span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; Equal area: FALSE</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co"># Step 2: Extract centroids as sampling points</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(strata)</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co"># Plot both strata and samples</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="fu">ss_plot</span>(strata, <span class="at">samples =</span> samples)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+<div id="algorithm-variants" class="section level2">
+<h2>Algorithm Variants</h2>
+<p>The package implements two k-means variants:</p>
+<div id="transfer-algorithm-default" class="section level3">
+<h3>1. Transfer Algorithm (Default)</h3>
+<p>Creates compact strata that may have unequal sizes:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Standard spatial coverage</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>samples_transfer <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area, <span class="at">n_strata =</span> <span class="dv">20</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Check stratum sizes</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>strata_transfer <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(study_area, <span class="at">n_strata =</span> <span class="dv">20</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>areas <span class="ot">&lt;-</span> <span class="fu">ss_relative_area</span>(strata_transfer)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="fu">summary</span>(areas)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; 0.01730 0.02887 0.04547 0.05000 0.06539 0.09819</span></span></code></pre></div>
+</div>
+<div id="swop-algorithm-equal-area" class="section level3">
+<h3>2. Swop Algorithm (Equal Area)</h3>
+<p>Creates strata of approximately equal size:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Equal-area coverage sampling</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>samples_equal <span class="ot">&lt;-</span> <span class="fu">ss_coverage_equal_area</span>(study_area, <span class="at">n_strata =</span> <span class="dv">20</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># Check stratum sizes</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>strata_equal <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  study_area,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">n_strata =</span> <span class="dv">20</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">n_try =</span> <span class="dv">5</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">equal_area =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>areas_equal <span class="ot">&lt;-</span> <span class="fu">ss_relative_area</span>(strata_equal)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="fu">summary</span>(areas_equal)</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt;  0.0499  0.0499  0.0499  0.0500  0.0500  0.0503</span></span></code></pre></div>
+<p>The equal-area variant is particularly useful for composite sampling
+where you need equal representation from each stratum.</p>
+</div>
+</div>
+<div id="incorporating-prior-points" class="section level2">
+<h2>Incorporating Prior Points</h2>
+<p>You can incorporate existing sampling locations as fixed stratum
+centers:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Suppose we have 2 existing sampling locations</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>prior_pts <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">75</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">25</span>)),</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co"># Create stratification with prior points</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>strata_prior <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  study_area,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="at">n_strata =</span> <span class="dv">20</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="at">prior_points =</span> prior_pts,</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="at">n_try =</span> <span class="dv">5</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>)</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># Get coverage samples</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>samples_prior <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(strata_prior)</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co"># Plot with prior points highlighted</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="fu">ss_plot</span>(samples_prior)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Prior points are useful when: - Adding to an existing monitoring
+network - Incorporating legacy sampling locations - Designing adaptive
+sampling schemes</p>
+</div>
+<div id="optimizing-parameters" class="section level2">
+<h2>Optimizing Parameters</h2>
+<div id="number-of-strata" class="section level3">
+<h3>Number of Strata</h3>
+<p>The choice of <code>n_strata</code> depends on:</p>
+<ul>
+<li><strong>Survey budget</strong>: More strata = more samples</li>
+<li><strong>Spatial variability</strong>: More heterogeneous areas need
+more samples</li>
+<li><strong>Mapping resolution</strong>: Finer maps need more
+samples</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Compare different numbers of strata</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>samples_10 <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area, <span class="at">n_strata =</span> <span class="dv">10</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>samples_50 <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area, <span class="at">n_strata =</span> <span class="dv">50</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;10 strata&quot;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samples_10<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;50 strata&quot;</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samples_50<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+</div>
+<div id="number-of-tries" class="section level3">
+<h3>Number of Tries</h3>
+<p>The <code>n_try</code> parameter controls how many random
+initializations to use:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Compare convergence with different n_try values</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>result_1 <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>result_5 <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>result_20 <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">20</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;n_try = 1:  MSSD =&quot;</span>, <span class="fu">format</span>(result_1<span class="sc">$</span>mssd, <span class="at">digits =</span> <span class="dv">6</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; n_try = 1:  MSSD = 44.8293</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;n_try = 5:  MSSD =&quot;</span>, <span class="fu">format</span>(result_5<span class="sc">$</span>mssd, <span class="at">digits =</span> <span class="dv">6</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; n_try = 5:  MSSD = 42.2402</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;n_try = 20: MSSD =&quot;</span>, <span class="fu">format</span>(result_20<span class="sc">$</span>mssd, <span class="at">digits =</span> <span class="dv">6</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; n_try = 20: MSSD = 40.4797</span></span></code></pre></div>
+<p>Higher <code>n_try</code> generally produces better results but takes
+longer.</p>
+</div>
+<div id="grid-resolution" class="section level3">
+<h3>Grid Resolution</h3>
+<p>Control discretization resolution with <code>n_cells</code> or
+<code>cell_size</code>:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Coarse grid (fast)</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>strata_coarse <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  study_area,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">n_strata =</span> <span class="dv">25</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">n_cells =</span> <span class="dv">500</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="at">n_try =</span> <span class="dv">3</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co"># Fine grid (slower but more precise)</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>strata_fine <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  study_area,</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="at">n_strata =</span> <span class="dv">25</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  <span class="at">n_cells =</span> <span class="dv">5000</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>  <span class="at">n_try =</span> <span class="dv">3</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>)</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Coarse grid:&quot;</span>, <span class="fu">nrow</span>(strata_coarse<span class="sc">$</span>cells), <span class="st">&quot;cells</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; Coarse grid: 512 cells</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Fine grid:  &quot;</span>, <span class="fu">nrow</span>(strata_fine<span class="sc">$</span>cells), <span class="st">&quot;cells</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; Fine grid:   5000 cells</span></span></code></pre></div>
+</div>
+</div>
+<div id="stratified-random-sampling" class="section level2">
+<h2>Stratified Random Sampling</h2>
+<p>For design-based inference, use stratified random sampling instead of
+centroid placement:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Create strata</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>strata <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># Take 1 random sample per stratum</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>samples_strat <span class="ot">&lt;-</span> <span class="fu">ss_stratified</span>(strata, <span class="at">n_per_stratum =</span> <span class="dv">1</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co"># Or take multiple samples per stratum</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>samples_strat_3 <span class="ot">&lt;-</span> <span class="fu">ss_stratified</span>(strata, <span class="at">n_per_stratum =</span> <span class="dv">3</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="fu">ss_plot</span>(strata, <span class="at">samples =</span> samples_strat_3)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>This provides: - Valid probability sampling - Unbiased estimates of
+means and totals - Better precision than simple random sampling</p>
+</div>
+<div id="composite-sampling" class="section level2">
+<h2>Composite Sampling</h2>
+<p>For laboratory cost reduction, combine samples from multiple
+locations:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Create 3 composite samples from 20 equal-area strata</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>samples_comp <span class="ot">&lt;-</span> <span class="fu">ss_composite</span>(study_area, <span class="at">n_strata =</span> <span class="dv">20</span>, <span class="at">n_composites =</span> <span class="dv">3</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co"># Each composite includes one sample from each stratum</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">ss_plot</span>(samples_comp)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="working-with-geographic-coordinates" class="section level2">
+<h2>Working with Geographic Coordinates</h2>
+<p>The package handles lat/lon coordinates automatically:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Study area with geographic CRS</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>study_area_geo <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(study_area, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co"># The algorithm uses haversine distance automatically</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>samples_geo <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area_geo, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co"># Note: equal_area is not supported for lat/lon</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co"># This will produce an error:</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co"># samples_error &lt;- ss_coverage_equal_area(study_area_geo, n_strata = 25)</span></span></code></pre></div>
+</div>
+<div id="practical-workflow" class="section level2">
+<h2>Practical Workflow</h2>
+<p>A typical workflow for a soil survey:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># 1. Load study area</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>study_area <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">&quot;my_field.shp&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co"># 2. Design sampling scheme</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)  <span class="co"># For reproducibility</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area, <span class="at">n_strata =</span> <span class="dv">50</span>, <span class="at">n_try =</span> <span class="dv">10</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co"># 3. Examine results</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="fu">print</span>(samples)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="fu">summary</span>(samples)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># 4. Export for field work</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">ss_to_data_frame</span>(samples)</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="fu">write.csv</span>(coords, <span class="st">&quot;field_sampling_locations.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co"># 5. Export as shapefile for GPS</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="fu">st_write</span>(<span class="fu">ss_to_sf</span>(samples), <span class="st">&quot;sampling_points.gpkg&quot;</span>)</span></code></pre></div>
+</div>
+<div id="comparison-with-other-methods" class="section level2">
+<h2>Comparison with Other Methods</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">789</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co"># Spatial coverage</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>samp_coverage <span class="ot">&lt;-</span> <span class="fu">ss_coverage</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co"># Stratified random</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>strata <span class="ot">&lt;-</span> <span class="fu">ss_stratify</span>(study_area, <span class="at">n_strata =</span> <span class="dv">25</span>, <span class="at">n_try =</span> <span class="dv">5</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>samp_stratified <span class="ot">&lt;-</span> <span class="fu">ss_stratified</span>(strata, <span class="at">n_per_stratum =</span> <span class="dv">1</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co"># Simple random</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>samp_random <span class="ot">&lt;-</span> <span class="fu">ss_random</span>(study_area, <span class="at">n =</span> <span class="dv">25</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co"># Compare spatial distribution</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;Coverage&quot;</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samp_coverage<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;Stratified Random&quot;</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samp_stratified<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(study_area), <span class="at">main =</span> <span class="st">&quot;Simple Random&quot;</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(samp_random<span class="sc">$</span>samples), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Walvoort, D.J.J., Brus, D.J., and de Gruijter, J.J. (2010). An R
+package for spatial coverage sampling and random sampling from compact
+geographical strata by k-means. <em>Computers &amp; Geosciences</em> 36,
+1261-1267. DOI: 10.1016/j.cageo.2010.04.005</p></li>
+<li><p>de Gruijter, J.J., Brus, D.J., Bierkens, M.F.P., and Knotters, M.
+(2006). <em>Sampling for Natural Resource Monitoring</em>. Springer,
+Berlin.</p></li>
+<li><p>Brus, D.J. and de Gruijter, J.J. (1997). Random sampling or
+geostatistical modelling? Choosing between design-based and model-based
+sampling strategies for soil. <em>Geoderma</em> 80(1-2), 1-44.</p></li>
+</ul>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
