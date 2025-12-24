@@ -1,4 +1,4 @@
-# soilsampling
+# soilsampling <img src="man/figures/logo.png" align="right" height="139" alt="soilsampling logo" />
 
 Soil Sampling Design Methods Including Spatial Coverage, Maxvol Optimal Design, Simple Random, and Stratified Sampling
 
