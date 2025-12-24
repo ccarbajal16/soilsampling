@@ -20,12 +20,6 @@ navbar:
     left:  [intro, reference, articles, news]
     right: [search, github]
   components:
-    home:
-      icon: fa-home
-      href: index.html
-    reference:
-      text: Reference
-      href: reference/index.html
     articles:
       text: Articles
       menu:
@@ -37,46 +31,12 @@ navbar:
         href: articles/maxvol-sampling.html
       - text: User Guide
         href: articles/user-guide.html
-    news:
-      text: News
-      href: news/index.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/ccarbajal16/soilsampling
 
-reference:
-  - title: "Main Functions"
-    desc: "Core functions for stratification and sampling"
-  - subtitle: "Stratification"
-    contents:
-    - ss_stratify
-  - subtitle: "Sampling Methods"
-    contents:
-    - ss_random
-    - ss_stratified
-    - ss_coverage
-    - ss_coverage_equal_area
-    - ss_composite
-    - ss_maxvol
-  - subtitle: "Validation Metrics"
-    contents:
-    - ss_coverage_efficiency
-    - ss_distance_summary
-  - subtitle: "Visualization"
-    contents:
-    - ss_plot
-    - ss_plot_samples
-  - title: "Helper Functions"
-    desc: "Utilities and accessors"
-    contents:
-    - ss_to_sf
-    - ss_to_data_frame
-    - ss_summary
-    - ss_get_samples
-    - ss_n_samples
-    - ss_n_strata
-    - ss_area
-    - ss_relative_area
+# Let pkgdown auto-generate the reference page
+# This will include all exported functions automatically
 
 figures:
   dev: ragg::agg_png
