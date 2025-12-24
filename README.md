@@ -16,9 +16,21 @@ The **soilsampling** package provides methods for designing soil sampling scheme
 
 ## Installation
 
+### Install from GitHub (Recommended)
+
 ```r
-# Install from local source
-install.packages("soilsampling", repos = NULL, type = "source")
+# Using pak (fastest)
+pak::pak("ccarbajal16/soilsampling")
+
+# Or using devtools
+devtools::install_github("ccarbajal16/soilsampling")
+```
+
+### Install from Local Source
+
+```r
+# Install from local directory
+install.packages(".", repos = NULL, type = "source")
 
 # Or using devtools
 devtools::install_local("path/to/soilsampling")
