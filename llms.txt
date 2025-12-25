@@ -379,7 +379,11 @@ between cells and their assigned cluster centroids.
 
 GPL (\>= 3)
 
-# 
+# Package index
+
+## All Functions
+
+All exported functions and methods
 
 # Articles
 
