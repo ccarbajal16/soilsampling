@@ -43,7 +43,6 @@ reference:
   - starts_with("plot.")
   - starts_with("print.")
   - starts_with("summary.")
-  - soilsampling-package
 
 figures:
   dev: ragg::agg_png
