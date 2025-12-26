@@ -3,6 +3,7 @@
 #' Functions for generating sampling points using different sampling methods.
 #'
 #' @name sampling
+#' @keywords internal
 NULL
 
 

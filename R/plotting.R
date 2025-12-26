@@ -3,6 +3,7 @@
 #' Functions for visualizing stratification and sampling patterns.
 #'
 #' @name plotting
+#' @keywords internal
 NULL
 
 

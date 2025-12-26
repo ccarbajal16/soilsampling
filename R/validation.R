@@ -4,6 +4,7 @@
 #'
 #' @importFrom stats median sd
 #' @name validation
+#' @keywords internal
 NULL
 
 

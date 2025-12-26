@@ -38,6 +38,8 @@ navbar:
 reference:
 - title: Package Overview
   desc: Overview of the soilsampling package
+  contents:
+  - soilsampling-package
 
 - title: Sampling Methods
   desc: Functions for generating sampling designs
