@@ -12,7 +12,6 @@
 /src/*.dll
 
 # Documentation
-/man/*.Rd
 !/man/figures/
 /docs/
 
