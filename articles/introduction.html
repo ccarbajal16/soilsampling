@@ -65,7 +65,7 @@
                         <h4 data-toc-skip class="author">soilsampling
 Package Authors</h4>
             
-            <h4 data-toc-skip class="date">2025-12-25</h4>
+            <h4 data-toc-skip class="date">2025-12-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ccarbajal16/soilsampling/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
@@ -129,7 +129,7 @@ software.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create spatial coverage sampling design</span></span>
-<span><span class="va">samples_coverage</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samples_coverage</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># View summary</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">samples_coverage</span><span class="op">)</span></span>
@@ -139,7 +139,7 @@ software.</p>
 <span><span class="co">#&gt; Number of strata: 25</span></span>
 <span></span>
 <span><span class="co"># Plot</span></span>
-<span><span class="fu">ss_plot</span><span class="op">(</span><span class="va">samples_coverage</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot.html">ss_plot</a></span><span class="op">(</span><span class="va">samples_coverage</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
@@ -147,13 +147,13 @@ software.</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># First create strata</span></span>
-<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Take random samples within each stratum</span></span>
-<span><span class="va">samples_stratified</span> <span class="op">&lt;-</span> <span class="fu">ss_stratified</span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">samples_stratified</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratified.html">ss_stratified</a></span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot</span></span>
-<span><span class="fu">ss_plot</span><span class="op">(</span><span class="va">strata</span>, samples <span class="op">=</span> <span class="va">samples_stratified</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot.html">ss_plot</a></span><span class="op">(</span><span class="va">strata</span>, samples <span class="op">=</span> <span class="va">samples_stratified</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
@@ -161,10 +161,10 @@ software.</p>
 </h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simple random sampling</span></span>
-<span><span class="va">samples_random</span> <span class="op">&lt;-</span> <span class="fu">ss_random</span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
+<span><span class="va">samples_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_random.html">ss_random</a></span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot</span></span>
-<span><span class="fu">ss_plot_samples</span><span class="op">(</span><span class="va">samples_random</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot_samples.html">ss_plot_samples</a></span><span class="op">(</span><span class="va">samples_random</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 </div>
@@ -176,7 +176,7 @@ software.</p>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get coordinates as data frame</span></span>
-<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">ss_to_data_frame</span><span class="op">(</span><span class="va">samples_coverage</span><span class="op">)</span></span>
+<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_to_data_frame.html">ss_to_data_frame</a></span><span class="op">(</span><span class="va">samples_coverage</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">coords</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   sample_id stratum_id is_prior        X        Y</span></span>
 <span><span class="co">#&gt; 1         1          1    FALSE 35.02039 46.55740</span></span>
@@ -198,7 +198,7 @@ software.</p>
 </h3>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get as sf object</span></span>
-<span><span class="va">samples_sf</span> <span class="op">&lt;-</span> <span class="fu">ss_to_sf</span><span class="op">(</span><span class="va">samples_coverage</span><span class="op">)</span></span>
+<span><span class="va">samples_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_to_sf.html">ss_to_sf</a></span><span class="op">(</span><span class="va">samples_coverage</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Export to GeoPackage</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="va">samples_sf</span>, <span class="st">"sampling_points.gpkg"</span><span class="op">)</span></span>
@@ -217,10 +217,10 @@ software.</p>
 <span></span>
 <span><span class="co"># Create sampling design</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">50</span>, n_try <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">50</span>, n_try <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Export coordinates</span></span>
-<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">ss_to_data_frame</span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
+<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_to_data_frame.html">ss_to_data_frame</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">coords</span>, <span class="st">"field_sampling_points.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -241,31 +241,31 @@ software.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>ss_coverage()</code></td>
+<td><code><a href="../reference/ss_coverage.html">ss_coverage()</a></code></td>
 <td>Interpolation (kriging)</td>
 <td>Model-based</td>
 <td>Optimal spatial coverage</td>
 </tr>
 <tr class="even">
-<td><code>ss_stratified()</code></td>
+<td><code><a href="../reference/ss_stratified.html">ss_stratified()</a></code></td>
 <td>Estimating means/totals</td>
 <td>Design-based</td>
 <td>Valid probability sample</td>
 </tr>
 <tr class="odd">
-<td><code>ss_random()</code></td>
+<td><code><a href="../reference/ss_random.html">ss_random()</a></code></td>
 <td>Simple design-based analysis</td>
 <td>Design-based</td>
 <td>Unbiased estimates</td>
 </tr>
 <tr class="even">
-<td><code>ss_maxvol()</code></td>
+<td><code><a href="../reference/ss_maxvol.html">ss_maxvol()</a></code></td>
 <td>Optimal feature coverage</td>
 <td>Model-based</td>
 <td>D-optimal design</td>
 </tr>
 <tr class="odd">
-<td><code>ss_composite()</code></td>
+<td><code><a href="../reference/ss_composite.html">ss_composite()</a></code></td>
 <td>Reducing laboratory costs</td>
 <td>Design-based</td>
 <td>Combined samples</td>
@@ -280,12 +280,12 @@ software.</p>
 <h3 id="design-based-vs-model-based">Design-Based vs Model-Based<a class="anchor" aria-label="anchor" href="#design-based-vs-model-based"></a>
 </h3>
 <p><strong>Design-based sampling</strong> (e.g.,
-<code>ss_random()</code>, <code>ss_stratified()</code>): - Uses
+<code><a href="../reference/ss_random.html">ss_random()</a></code>, <code><a href="../reference/ss_stratified.html">ss_stratified()</a></code>): - Uses
 probability sampling - Statistical inference based on sampling design -
 Valid for design-based estimation (means, totals) - No assumptions about
 spatial autocorrelation required</p>
 <p><strong>Model-based sampling</strong> (e.g.,
-<code>ss_coverage()</code>, <code>ss_maxvol()</code>): - Purposive
+<code><a href="../reference/ss_coverage.html">ss_coverage()</a></code>, <code><a href="../reference/ss_maxvol.html">ss_maxvol()</a></code>): - Purposive
 (non-random) sample selection - Requires spatial model for inference
 (e.g., kriging) - Optimal for prediction and interpolation - More
 efficient for mapping applications</p>
@@ -324,11 +324,11 @@ sampling methods</li>
 <code><a href="../articles/maxvol-sampling.html">vignette("maxvol-sampling")</a></code> - Maxvol optimal design
 sampling</li>
 <li>
-<code>?ss_stratify</code> - Help on stratification</li>
+<code><a href="../reference/ss_stratify.html">?ss_stratify</a></code> - Help on stratification</li>
 <li>
-<code>?ss_coverage</code> - Help on coverage sampling</li>
+<code><a href="../reference/ss_coverage.html">?ss_coverage</a></code> - Help on coverage sampling</li>
 <li>
-<code>?ss_maxvol</code> - Help on maxvol sampling</li>
+<code><a href="../reference/ss_maxvol.html">?ss_maxvol</a></code> - Help on maxvol sampling</li>
 </ul>
 </div>
 <div class="section level2">

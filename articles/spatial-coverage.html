@@ -65,7 +65,7 @@
                         <h4 data-toc-skip class="author">soilsampling
 Package Authors</h4>
             
-            <h4 data-toc-skip class="date">2025-12-25</h4>
+            <h4 data-toc-skip class="date">2025-12-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ccarbajal16/soilsampling/blob/main/vignettes/spatial-coverage.Rmd" class="external-link"><code>vignettes/spatial-coverage.Rmd</code></a></small>
       <div class="d-none name"><code>spatial-coverage.Rmd</code></div>
@@ -144,7 +144,7 @@ coordinates).</p>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create 25 coverage samples in one step</span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Spatial Coverage Sampling </span></span>
@@ -157,7 +157,7 @@ coordinates).</p>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Step 1: Create stratification</span></span>
-<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">strata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Soil Sampling Stratification</span></span>
@@ -170,10 +170,10 @@ coordinates).</p>
 <span><span class="co">#&gt; Equal area: FALSE</span></span>
 <span></span>
 <span><span class="co"># Step 2: Extract centroids as sampling points</span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">strata</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">strata</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot both strata and samples</span></span>
-<span><span class="fu">ss_plot</span><span class="op">(</span><span class="va">strata</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot.html">ss_plot</a></span><span class="op">(</span><span class="va">strata</span>, samples <span class="op">=</span> <span class="va">samples</span><span class="op">)</span></span></code></pre></div>
 <p><img src="spatial-coverage_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 </div>
@@ -187,11 +187,11 @@ coordinates).</p>
 <p>Creates compact strata that may have unequal sizes:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Standard spatial coverage</span></span>
-<span><span class="va">samples_transfer</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samples_transfer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check stratum sizes</span></span>
-<span><span class="va">strata_transfer</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">areas</span> <span class="op">&lt;-</span> <span class="fu">ss_relative_area</span><span class="op">(</span><span class="va">strata_transfer</span><span class="op">)</span></span>
+<span><span class="va">strata_transfer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">areas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_relative_area.html">ss_relative_area</a></span><span class="op">(</span><span class="va">strata_transfer</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">areas</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
 <span><span class="co">#&gt; 0.01730 0.02897 0.04547 0.05000 0.06539 0.09819</span></span></code></pre></div>
@@ -202,16 +202,16 @@ coordinates).</p>
 <p>Creates strata of approximately equal size:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Equal-area coverage sampling</span></span>
-<span><span class="va">samples_equal</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage_equal_area</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samples_equal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage_equal_area.html">ss_coverage_equal_area</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check stratum sizes</span></span>
-<span><span class="va">strata_equal</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span></span>
+<span><span class="va">strata_equal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span></span>
 <span>  <span class="va">study_area</span>,</span>
 <span>  n_strata <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  n_try <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  equal_area <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">areas_equal</span> <span class="op">&lt;-</span> <span class="fu">ss_relative_area</span><span class="op">(</span><span class="va">strata_equal</span><span class="op">)</span></span>
+<span><span class="va">areas_equal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_relative_area.html">ss_relative_area</a></span><span class="op">(</span><span class="va">strata_equal</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">areas_equal</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
 <span><span class="co">#&gt;  0.0499  0.0499  0.0499  0.0500  0.0500  0.0503</span></span></code></pre></div>
@@ -232,7 +232,7 @@ centers:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create stratification with prior points</span></span>
-<span><span class="va">strata_prior</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span></span>
+<span><span class="va">strata_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span></span>
 <span>  <span class="va">study_area</span>,</span>
 <span>  n_strata <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  prior_points <span class="op">=</span> <span class="va">prior_pts</span>,</span>
@@ -240,10 +240,10 @@ centers:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get coverage samples</span></span>
-<span><span class="va">samples_prior</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">strata_prior</span><span class="op">)</span></span>
+<span><span class="va">samples_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">strata_prior</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot with prior points highlighted</span></span>
-<span><span class="fu">ss_plot</span><span class="op">(</span><span class="va">samples_prior</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot.html">ss_plot</a></span><span class="op">(</span><span class="va">samples_prior</span><span class="op">)</span></span></code></pre></div>
 <p><img src="spatial-coverage_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="672"></p>
 <p>Prior points are useful when: - Adding to an existing monitoring
 network - Incorporating legacy sampling locations - Designing adaptive
@@ -268,8 +268,8 @@ samples</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare different numbers of strata</span></span>
-<span><span class="va">samples_10</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">10</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">samples_50</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">50</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samples_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">10</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samples_50</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">50</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">study_area</span><span class="op">)</span>, main <span class="op">=</span> <span class="st">"10 strata"</span><span class="op">)</span></span>
@@ -289,9 +289,9 @@ initializations to use:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare convergence with different n_try values</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">456</span><span class="op">)</span></span>
-<span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">result_5</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">result_20</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">result_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">result_20</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"n_try = 1:  MSSD ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="va">result_1</span><span class="op">$</span><span class="va">mssd</span>, digits <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; n_try = 1:  MSSD = 44.7988</span></span>
@@ -309,7 +309,7 @@ longer.</p>
 <code>cell_size</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Coarse grid (fast)</span></span>
-<span><span class="va">strata_coarse</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span></span>
+<span><span class="va">strata_coarse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span></span>
 <span>  <span class="va">study_area</span>,</span>
 <span>  n_strata <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>  n_cells <span class="op">=</span> <span class="fl">500</span>,</span>
@@ -317,7 +317,7 @@ longer.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Fine grid (slower but more precise)</span></span>
-<span><span class="va">strata_fine</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span></span>
+<span><span class="va">strata_fine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span></span>
 <span>  <span class="va">study_area</span>,</span>
 <span>  n_strata <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>  n_cells <span class="op">=</span> <span class="fl">5000</span>,</span>
@@ -337,15 +337,15 @@ longer.</p>
 centroid placement:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create strata</span></span>
-<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Take 1 random sample per stratum</span></span>
-<span><span class="va">samples_strat</span> <span class="op">&lt;-</span> <span class="fu">ss_stratified</span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">samples_strat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratified.html">ss_stratified</a></span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Or take multiple samples per stratum</span></span>
-<span><span class="va">samples_strat_3</span> <span class="op">&lt;-</span> <span class="fu">ss_stratified</span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">samples_strat_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratified.html">ss_stratified</a></span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ss_plot</span><span class="op">(</span><span class="va">strata</span>, samples <span class="op">=</span> <span class="va">samples_strat_3</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot.html">ss_plot</a></span><span class="op">(</span><span class="va">strata</span>, samples <span class="op">=</span> <span class="va">samples_strat_3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="spatial-coverage_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="672"></p>
 <p>This provides: - Valid probability sampling - Unbiased estimates of
 means and totals - Better precision than simple random sampling</p>
@@ -357,10 +357,10 @@ means and totals - Better precision than simple random sampling</p>
 locations:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create 3 composite samples from 20 equal-area strata</span></span>
-<span><span class="va">samples_comp</span> <span class="op">&lt;-</span> <span class="fu">ss_composite</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_composites <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">samples_comp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_composite.html">ss_composite</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_composites <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Each composite includes one sample from each stratum</span></span>
-<span><span class="fu">ss_plot</span><span class="op">(</span><span class="va">samples_comp</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot.html">ss_plot</a></span><span class="op">(</span><span class="va">samples_comp</span><span class="op">)</span></span></code></pre></div>
 <p><img src="spatial-coverage_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
@@ -372,7 +372,7 @@ locations:</p>
 <span><span class="va">study_area_geo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="va">study_area</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The algorithm uses haversine distance automatically</span></span>
-<span><span class="va">samples_geo</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area_geo</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samples_geo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area_geo</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Note: equal_area is not supported for lat/lon</span></span>
 <span><span class="co"># This will produce an error:</span></span>
@@ -388,18 +388,18 @@ locations:</p>
 <span></span>
 <span><span class="co"># 2. Design sampling scheme</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>  <span class="co"># For reproducibility</span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">50</span>, n_try <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">50</span>, n_try <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 3. Examine results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 4. Export for field work</span></span>
-<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">ss_to_data_frame</span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
+<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_to_data_frame.html">ss_to_data_frame</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">coords</span>, <span class="st">"field_sampling_locations.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 5. Export as shapefile for GPS</span></span>
-<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="fu">ss_to_sf</span><span class="op">(</span><span class="va">samples</span><span class="op">)</span>, <span class="st">"sampling_points.gpkg"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="fu"><a href="../reference/ss_to_sf.html">ss_to_sf</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span>, <span class="st">"sampling_points.gpkg"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="comparison-with-other-methods">Comparison with Other Methods<a class="anchor" aria-label="anchor" href="#comparison-with-other-methods"></a>
@@ -408,14 +408,14 @@ locations:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">789</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Spatial coverage</span></span>
-<span><span class="va">samp_coverage</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samp_coverage</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Stratified random</span></span>
-<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu">ss_stratify</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">samp_stratified</span> <span class="op">&lt;-</span> <span class="fu">ss_stratified</span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samp_stratified</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_stratified.html">ss_stratified</a></span><span class="op">(</span><span class="va">strata</span>, n_per_stratum <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Simple random</span></span>
-<span><span class="va">samp_random</span> <span class="op">&lt;-</span> <span class="fu">ss_random</span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
+<span><span class="va">samp_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_random.html">ss_random</a></span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compare spatial distribution</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>

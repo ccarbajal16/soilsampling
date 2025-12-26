@@ -147,24 +147,28 @@ write.csv(coords, "field_sampling_points.csv", row.names = FALSE)
 
 ## When to Use Each Method
 
-| Method            | Best For                     | Inference Type | Key Features             |
-|-------------------|------------------------------|----------------|--------------------------|
-| `ss_coverage()`   | Interpolation (kriging)      | Model-based    | Optimal spatial coverage |
-| `ss_stratified()` | Estimating means/totals      | Design-based   | Valid probability sample |
-| `ss_random()`     | Simple design-based analysis | Design-based   | Unbiased estimates       |
-| `ss_maxvol()`     | Optimal feature coverage     | Model-based    | D-optimal design         |
-| `ss_composite()`  | Reducing laboratory costs    | Design-based   | Combined samples         |
+| Method                                                                                     | Best For                     | Inference Type | Key Features             |
+|--------------------------------------------------------------------------------------------|------------------------------|----------------|--------------------------|
+| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md)     | Interpolation (kriging)      | Model-based    | Optimal spatial coverage |
+| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Estimating means/totals      | Design-based   | Valid probability sample |
+| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md)         | Simple design-based analysis | Design-based   | Unbiased estimates       |
+| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md)         | Optimal feature coverage     | Model-based    | D-optimal design         |
+| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md)   | Reducing laboratory costs    | Design-based   | Combined samples         |
 
 ## Sampling Methods Comparison
 
 ### Design-Based vs Model-Based
 
-**Design-based sampling** (e.g., `ss_random()`, `ss_stratified()`): -
+**Design-based sampling** (e.g.,
+[`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md),
+[`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md)): -
 Uses probability sampling - Statistical inference based on sampling
 design - Valid for design-based estimation (means, totals) - No
 assumptions about spatial autocorrelation required
 
-**Model-based sampling** (e.g., `ss_coverage()`, `ss_maxvol()`): -
+**Model-based sampling** (e.g.,
+[`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md),
+[`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md)): -
 Purposive (non-random) sample selection - Requires spatial model for
 inference (e.g., kriging) - Optimal for prediction and interpolation -
 More efficient for mapping applications
@@ -190,9 +194,12 @@ For more detailed information on specific methods, see:
   Spatial coverage sampling methods
 - [`vignette("maxvol-sampling")`](https://ccarbajal16.github.io/soilsampling/articles/maxvol-sampling.md) -
   Maxvol optimal design sampling
-- `?ss_stratify` - Help on stratification
-- `?ss_coverage` - Help on coverage sampling
-- `?ss_maxvol` - Help on maxvol sampling
+- [`?ss_stratify`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratify.md) -
+  Help on stratification
+- [`?ss_coverage`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md) -
+  Help on coverage sampling
+- [`?ss_maxvol`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md) -
+  Help on maxvol sampling
 
 ## References
 

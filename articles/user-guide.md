@@ -109,34 +109,34 @@ strata_custom <- ss_stratify(
   equal_area = FALSE,
   verbose = TRUE
 )
-#> 2025-12-25 13:04:46 | Optimizing configuration 1
+#> 2025-12-26 02:33:22 | Optimizing configuration 1
 #>     Current MSSD: 33.7103
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 2
+#> 2025-12-26 02:33:22 | Optimizing configuration 2
 #>     Current MSSD: 36.4875
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 3
+#> 2025-12-26 02:33:22 | Optimizing configuration 3
 #>     Current MSSD: 34.0026
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 4
+#> 2025-12-26 02:33:22 | Optimizing configuration 4
 #>     Current MSSD: 37.1821
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 5
+#> 2025-12-26 02:33:22 | Optimizing configuration 5
 #>     Current MSSD: 35.1059
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 6
+#> 2025-12-26 02:33:22 | Optimizing configuration 6
 #>     Current MSSD: 41.1071
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 7
+#> 2025-12-26 02:33:22 | Optimizing configuration 7
 #>     Current MSSD: 40.3993
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 8
+#> 2025-12-26 02:33:22 | Optimizing configuration 8
 #>     Current MSSD: 35.2979
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 9
+#> 2025-12-26 02:33:22 | Optimizing configuration 9
 #>     Current MSSD: 36.664
 #>     Best MSSD: 33.7103
-#> 2025-12-25 13:04:46 | Optimizing configuration 10
+#> 2025-12-26 02:33:22 | Optimizing configuration 10
 #>     Current MSSD: 42.7942
 #>     Best MSSD: 33.7103
 ```
@@ -1124,13 +1124,13 @@ samples_comp <- ss_composite(study_area, n_strata = 20, n_composites = 4)
 
 ### 8.2 When to Use Each Method
 
-| Method            | Best For               | Advantages          | Disadvantages                |
-|-------------------|------------------------|---------------------|------------------------------|
-| `ss_random()`     | Simple designs         | Easy to implement   | May cluster                  |
-| `ss_stratified()` | Design-based inference | Unbiased estimates  | Requires good stratification |
-| `ss_coverage()`   | Spatial interpolation  | Good spatial spread | Not random                   |
-| `ss_maxvol()`     | Feature diversity      | Optimal for kriging | Needs feature data           |
-| `ss_composite()`  | Cost reduction         | Fewer lab analyses  | Less spatial detail          |
+| Method                                                                                     | Best For               | Advantages          | Disadvantages                |
+|--------------------------------------------------------------------------------------------|------------------------|---------------------|------------------------------|
+| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md)         | Simple designs         | Easy to implement   | May cluster                  |
+| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Design-based inference | Unbiased estimates  | Requires good stratification |
+| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md)     | Spatial interpolation  | Good spatial spread | Not random                   |
+| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md)         | Feature diversity      | Optimal for kriging | Needs feature data           |
+| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md)   | Cost reduction         | Fewer lab analyses  | Less spatial detail          |
 
 ------------------------------------------------------------------------
 
@@ -1312,42 +1312,66 @@ samples <- ss_maxvol(
 
 ### Stratification
 
-- `ss_stratify()` - Create compact geographical strata
+- [`ss_stratify()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratify.md) -
+  Create compact geographical strata
 
 ### Sampling
 
-- `ss_random()` - Simple random sampling
-- `ss_stratified()` - Stratified random sampling
-- `ss_coverage()` - Spatial coverage sampling
-- `ss_coverage_equal_area()` - Equal-area coverage sampling
-- `ss_maxvol()` - Maxvol optimal design sampling
-- `ss_composite()` - Composite sampling
+- [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md) -
+  Simple random sampling
+- [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) -
+  Stratified random sampling
+- [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md) -
+  Spatial coverage sampling
+- [`ss_coverage_equal_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage_equal_area.md) -
+  Equal-area coverage sampling
+- [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md) -
+  Maxvol optimal design sampling
+- [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md) -
+  Composite sampling
 
 ### Visualization
 
-- `ss_plot()` - Plot strata and/or samples
-- `ss_plot_samples()` - Plot samples only
-- `plot.ss_strata()` - S3 plot method for strata
-- `plot.ss_samples()` - S3 plot method for samples
+- [`ss_plot()`](https://ccarbajal16.github.io/soilsampling/reference/ss_plot.md) -
+  Plot strata and/or samples
+- [`ss_plot_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_plot_samples.md) -
+  Plot samples only
+- [`plot.ss_strata()`](https://ccarbajal16.github.io/soilsampling/reference/plot.ss_strata.md) -
+  S3 plot method for strata
+- [`plot.ss_samples()`](https://ccarbajal16.github.io/soilsampling/reference/plot.ss_samples.md) -
+  S3 plot method for samples
 
 ### Information
 
-- `ss_summary()` - Get summary statistics
-- `ss_summary.maxvol()` - Maxvol-specific summary
-- `print.ss_strata()` - Print strata
-- `print.ss_samples()` - Print samples
-- `summary.ss_strata()` - Summary for strata
-- `summary.ss_samples()` - Summary for samples
+- [`ss_summary()`](https://ccarbajal16.github.io/soilsampling/reference/ss_summary.md) -
+  Get summary statistics
+- [`ss_summary.maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_summary.maxvol.md) -
+  Maxvol-specific summary
+- [`print.ss_strata()`](https://ccarbajal16.github.io/soilsampling/reference/print.ss_strata.md) -
+  Print strata
+- [`print.ss_samples()`](https://ccarbajal16.github.io/soilsampling/reference/print.ss_samples.md) -
+  Print samples
+- [`summary.ss_strata()`](https://ccarbajal16.github.io/soilsampling/reference/summary.ss_strata.md) -
+  Summary for strata
+- [`summary.ss_samples()`](https://ccarbajal16.github.io/soilsampling/reference/summary.ss_samples.md) -
+  Summary for samples
 
 ### Utilities
 
-- `ss_n_strata()` - Get number of strata
-- `ss_n_samples()` - Get number of samples
-- `ss_get_samples()` - Extract samples as sf
-- `ss_to_sf()` - Convert to sf object
-- `ss_to_data_frame()` - Convert to data frame
-- `ss_area()` - Get stratum areas
-- `ss_relative_area()` - Get relative stratum areas
+- [`ss_n_strata()`](https://ccarbajal16.github.io/soilsampling/reference/ss_n_strata.md) -
+  Get number of strata
+- [`ss_n_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_n_samples.md) -
+  Get number of samples
+- [`ss_get_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_get_samples.md) -
+  Extract samples as sf
+- [`ss_to_sf()`](https://ccarbajal16.github.io/soilsampling/reference/ss_to_sf.md) -
+  Convert to sf object
+- [`ss_to_data_frame()`](https://ccarbajal16.github.io/soilsampling/reference/ss_to_data_frame.md) -
+  Convert to data frame
+- [`ss_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_area.md) -
+  Get stratum areas
+- [`ss_relative_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_relative_area.md) -
+  Get relative stratum areas
 
 ------------------------------------------------------------------------
 

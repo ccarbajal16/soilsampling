@@ -65,7 +65,7 @@
                         <h4 data-toc-skip class="author">soilsampling
 Package Authors</h4>
             
-            <h4 data-toc-skip class="date">2025-12-25</h4>
+            <h4 data-toc-skip class="date">2025-12-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ccarbajal16/soilsampling/blob/main/vignettes/maxvol-sampling.Rmd" class="external-link"><code>vignettes/maxvol-sampling.Rmd</code></a></small>
       <div class="d-none name"><code>maxvol-sampling.Rmd</code></div>
@@ -199,7 +199,7 @@ to sampling locations</p></li>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select 20 sampling points using maxvol</span></span>
-<span><span class="va">samples_maxvol</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_maxvol</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span>, <span class="st">"aspect"</span><span class="op">)</span>,</span>
@@ -213,7 +213,7 @@ to sampling locations</p></li>
 <span><span class="co">#&gt; Number of samples: 20</span></span>
 <span></span>
 <span><span class="co"># Plot results</span></span>
-<span><span class="fu">ss_plot_samples</span><span class="op">(</span><span class="va">samples_maxvol</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot_samples.html">ss_plot_samples</a></span><span class="op">(</span><span class="va">samples_maxvol</span><span class="op">)</span></span></code></pre></div>
 <p><img src="maxvol-sampling_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
@@ -222,7 +222,7 @@ to sampling locations</p></li>
 <p>To avoid spatial clustering, apply a minimum distance constraint:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select points with minimum 10-unit spacing</span></span>
-<span><span class="va">samples_constrained</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_constrained</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span>,</span>
@@ -231,7 +231,7 @@ to sampling locations</p></li>
 <span>  add_coords <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ss_plot_samples</span><span class="op">(</span><span class="va">samples_constrained</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ss_plot_samples.html">ss_plot_samples</a></span><span class="op">(</span><span class="va">samples_constrained</span><span class="op">)</span></span></code></pre></div>
 <p><img src="maxvol-sampling_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 </div>
@@ -266,7 +266,7 @@ terrain features for soil sampling:</p>
 geographic space:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Without coordinates: purely feature-based</span></span>
-<span><span class="va">samples_no_coords</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_no_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span><span class="op">)</span>,</span>
@@ -275,7 +275,7 @@ geographic space:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># With coordinates: balances features and geography</span></span>
-<span><span class="va">samples_with_coords</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_with_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span><span class="op">)</span>,</span>
@@ -310,7 +310,7 @@ geographic space:</p>
 <span><span class="co">#&gt;  Max.   : 61.51   Max.   :8.34239   Max.   :11.528</span></span>
 <span></span>
 <span><span class="co"># Without normalization: features with larger variance dominate</span></span>
-<span><span class="va">samples_raw</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span>,</span>
@@ -319,7 +319,7 @@ geographic space:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># With normalization: equal weight to all features</span></span>
-<span><span class="va">samples_norm</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span>,</span>
@@ -337,7 +337,7 @@ scales.</p>
 vary locally:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># No distance constraint</span></span>
-<span><span class="va">samples_no_dist</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_no_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span>,</span>
@@ -345,7 +345,7 @@ vary locally:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Small distance constraint</span></span>
-<span><span class="va">samples_small_dist</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_small_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span>,</span>
@@ -353,7 +353,7 @@ vary locally:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Large distance constraint</span></span>
-<span><span class="va">samples_large_dist</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_large_dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span>,</span>
@@ -410,7 +410,7 @@ unit diameter</li>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Maxvol sampling</span></span>
-<span><span class="va">samp_maxvol</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samp_maxvol</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">grid_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span>,</span>
@@ -419,10 +419,10 @@ unit diameter</li>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Spatial coverage (k-means based)</span></span>
-<span><span class="va">samp_coverage</span> <span class="op">&lt;-</span> <span class="fu">ss_coverage</span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">samp_coverage</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_coverage.html">ss_coverage</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Simple random</span></span>
-<span><span class="va">samp_random</span> <span class="op">&lt;-</span> <span class="fu">ss_random</span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
+<span><span class="va">samp_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_random.html">ss_random</a></span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -510,7 +510,7 @@ unit diameter</li>
 </h3>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select sampling points</span></span>
-<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">feature_sf</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elevation"</span>, <span class="st">"slope"</span>, <span class="st">"aspect"</span>, <span class="st">"tpi"</span>, <span class="st">"tri"</span><span class="op">)</span>,</span>
@@ -530,13 +530,13 @@ unit diameter</li>
 </h3>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get coordinates</span></span>
-<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu">ss_to_data_frame</span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
+<span><span class="va">coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_to_data_frame.html">ss_to_data_frame</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Export for field work</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">coords</span>, <span class="st">"maxvol_sampling_points.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Export as GeoPackage</span></span>
-<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="fu">ss_to_sf</span><span class="op">(</span><span class="va">samples</span><span class="op">)</span>, <span class="st">"maxvol_points.gpkg"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html" class="external-link">st_write</a></span><span class="op">(</span><span class="fu"><a href="../reference/ss_to_sf.html">ss_to_sf</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span>, <span class="st">"maxvol_points.gpkg"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -562,7 +562,7 @@ unit diameter</li>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">custom_features</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"elev"</span>, <span class="st">"slope"</span>, <span class="st">"twi"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use with maxvol</span></span>
-<span><span class="va">samples_custom</span> <span class="op">&lt;-</span> <span class="fu">ss_maxvol</span><span class="op">(</span></span>
+<span><span class="va">samples_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_maxvol.html">ss_maxvol</a></span><span class="op">(</span></span>
 <span>  <span class="va">custom_features</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  coords <span class="op">=</span> <span class="va">coords_mat</span>,</span>
@@ -576,7 +576,7 @@ unit diameter</li>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use maxvol to densify an existing sample</span></span>
 <span><span class="co"># Suppose we have prior samples</span></span>
-<span><span class="va">prior_samples</span> <span class="op">&lt;-</span> <span class="fu">ss_random</span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">prior_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ss_random.html">ss_random</a></span><span class="op">(</span><span class="va">study_area</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use stratification to avoid prior samples</span></span>
 <span><span class="co"># Then use maxvol for additional points</span></span>
