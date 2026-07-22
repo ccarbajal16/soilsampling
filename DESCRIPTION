@@ -25,6 +25,9 @@ Depends: R (>= 4.1.0)
 Imports:
     sf (>= 1.0-12),
     terra,
+    clhs,
+    dplyr,
+    minpack.lm,
     ggplot2 (>= 3.3.0),
     stats,
     methods

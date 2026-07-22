@@ -134,3 +134,237 @@ ss_kl_divergence <- function(population_data, sample_data, n_bins = 25) {
 
   mean(kl_values, na.rm = TRUE)
 }
+
+
+#' Optimize cLHS Sample Size Using KL Divergence
+#'
+#' Determines the sample size at which a conditioned Latin hypercube sample
+#' (cLHS) best represents the population distribution, following the
+#' KL-divergence-based approach of Malone et al. (2019). Runs cLHS at a
+#' range of sample sizes, fits an exponential decay curve to the mean KL
+#' divergence, and reports the smallest sample size that reaches a target
+#' proportion of the maximum achievable improvement.
+#'
+#' @param population_data Data frame of population ancillary data (one row
+#'   per population unit, one column per covariate).
+#' @param min_samples Integer, minimum sample size to test. Default `10`.
+#' @param max_samples Integer, maximum sample size to test. Default `500`.
+#' @param step_size Integer, increment between tested sample sizes.
+#'   Default `10`.
+#' @param n_replicates Integer, number of cLHS replicates per sample size.
+#'   Default `10`.
+#' @param n_bins Integer, number of histogram bins used by
+#'   [ss_kl_divergence()]. Default `25`.
+#' @param probability_threshold Numeric in (0, 1], CDF threshold used to
+#'   pick the optimal sample size. Default `0.95`.
+#'
+#' @return A list with:
+#'   \describe{
+#'     \item{raw_results}{Data frame, one row per replicate.}
+#'     \item{summary_results}{Data frame, mean/sd KL divergence per sample size.}
+#'     \item{fitted_model}{The fitted `nls` exponential decay model, or `NULL`.}
+#'     \item{fitted_curve}{Data frame of fitted KL divergence per sample size.}
+#'     \item{optimal_sample_size}{Integer, the recommended sample size.}
+#'     \item{plot_kl}{A `ggplot` of KL divergence vs. sample size.}
+#'     \item{plot_cdf}{A `ggplot` of the CDF used to pick the optimal size.}
+#'   }
+#'
+#' @details
+#' The relationship between sample size \eqn{n} and KL divergence is modeled
+#' as \eqn{KL(n) = b_1 e^{-kn} + b_0}. The optimal sample size is the
+#' smallest \eqn{n} for which the cumulative proportion of improvement,
+#' \eqn{(max(KL) - KL(n)) / (max(KL) - min(KL))}, reaches
+#' `probability_threshold`.
+#'
+#' @examples
+#' \dontrun{
+#' pop <- data.frame(a = rnorm(2000), b = runif(2000))
+#' res <- ss_kl_optimize(pop, min_samples = 10, max_samples = 60,
+#'   step_size = 10, n_replicates = 3)
+#' res$optimal_sample_size
+#' }
+#'
+#' @seealso [ss_kl_divergence()]
+#' @export
+ss_kl_optimize <- function(population_data,
+                            min_samples = 10,
+                            max_samples = 500,
+                            step_size = 10,
+                            n_replicates = 10,
+                            n_bins = 25,
+                            probability_threshold = 0.95) {
+  sample_sizes <- seq(min_samples, max_samples, by = step_size)
+
+  results <- data.frame(
+    sample_size = integer(),
+    replicate = integer(),
+    kl_divergence = numeric(),
+    stringsAsFactors = FALSE
+  )
+
+  for (n_samples in sample_sizes) {
+    for (rep in seq_len(n_replicates)) {
+      tryCatch({
+        clhs_idx <- clhs::clhs(population_data, size = n_samples, iter = 10000)
+        sample_data <- population_data[clhs_idx, ]
+
+        kl_div <- ss_kl_divergence(population_data, sample_data, n_bins)
+
+        results <- rbind(results, data.frame(
+          sample_size = n_samples,
+          replicate = rep,
+          kl_divergence = kl_div,
+          stringsAsFactors = FALSE
+        ))
+      }, error = function(e) {
+        warning("cLHS failed at sample size ", n_samples, ", replicate ", rep,
+          ": ", conditionMessage(e),
+          call. = FALSE
+        )
+      })
+    }
+  }
+
+  if (nrow(results) == 0) {
+    return(list(
+      raw_results = results,
+      summary_results = data.frame(),
+      fitted_model = NULL,
+      fitted_curve = NULL,
+      optimal_sample_size = NA,
+      plot_kl = NULL,
+      plot_cdf = NULL
+    ))
+  }
+
+  summary_results <- dplyr::summarise(
+    dplyr::group_by(results, .data$sample_size),
+    mean_kl = mean(.data$kl_divergence, na.rm = TRUE),
+    sd_kl = stats::sd(.data$kl_divergence, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+  exp_model <- NULL
+  fitted_curve <- NULL
+  cdf_values <- NULL
+  optimal_sample_size <- NA
+
+  if (nrow(summary_results) > 3) {
+    exp_model <- tryCatch({
+      minpack.lm::nlsLM(
+        mean_kl ~ b1 * exp(-k * sample_size) + b0,
+        data = summary_results,
+        start = list(
+          b0 = min(summary_results$mean_kl),
+          b1 = max(summary_results$mean_kl) - min(summary_results$mean_kl),
+          k = 0.01
+        )
+      )
+    }, error = function(e) {
+      warning("Exponential decay model fit failed: ", conditionMessage(e), call. = FALSE)
+      NULL
+    })
+
+    if (!is.null(exp_model)) {
+      fitted_curve <- data.frame(
+        sample_size = sample_sizes,
+        fitted_kl = predict(exp_model, newdata = data.frame(sample_size = sample_sizes))
+      )
+
+      max_improvement <- max(fitted_curve$fitted_kl) - min(fitted_curve$fitted_kl)
+      if (max_improvement > 1e-10) {
+        cdf_values <- (max(fitted_curve$fitted_kl) - fitted_curve$fitted_kl) / max_improvement
+        optimal_idx <- which(cdf_values >= probability_threshold)[1]
+        optimal_sample_size <- if (is.na(optimal_idx)) max_samples else sample_sizes[optimal_idx]
+      } else {
+        optimal_sample_size <- max_samples
+      }
+    }
+  }
+
+  plot_kl <- tryCatch(.plot_kl_divergence(summary_results, fitted_curve, step_size), error = function(e) NULL)
+
+  plot_cdf <- NULL
+  if (!is.null(cdf_values) && !is.na(optimal_sample_size)) {
+    plot_cdf <- tryCatch(
+      .plot_kl_cdf(sample_sizes, cdf_values, probability_threshold, optimal_sample_size, step_size),
+      error = function(e) NULL
+    )
+  }
+
+  list(
+    raw_results = results,
+    summary_results = summary_results,
+    fitted_model = exp_model,
+    fitted_curve = fitted_curve,
+    optimal_sample_size = optimal_sample_size,
+    plot_kl = plot_kl,
+    plot_cdf = plot_cdf
+  )
+}
+
+
+#' Plot KL Divergence vs. Sample Size
+#'
+#' @param summary_results Data frame with `sample_size`, `mean_kl`, `sd_kl`.
+#' @param fitted_curve Data frame with `sample_size`, `fitted_kl`, or `NULL`.
+#' @param step_size Integer, used to size error bar width.
+#'
+#' @return A `ggplot` object.
+#'
+#' @keywords internal
+.plot_kl_divergence <- function(summary_results, fitted_curve, step_size) {
+  p <- ggplot2::ggplot(summary_results, ggplot2::aes(x = .data$sample_size, y = .data$mean_kl)) +
+    ggplot2::geom_point(size = 2, color = "blue") +
+    ggplot2::geom_errorbar(
+      ggplot2::aes(
+        ymin = pmax(.data$mean_kl - .data$sd_kl, 0),
+        ymax = .data$mean_kl + .data$sd_kl
+      ),
+      width = step_size / 2, alpha = 0.7
+    ) +
+    ggplot2::labs(title = "KL Divergence vs Sample Size", x = "Number of Samples", y = "KL Divergence") +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+
+  if (!is.null(fitted_curve)) {
+    p <- p + ggplot2::geom_line(
+      data = fitted_curve,
+      ggplot2::aes(x = .data$sample_size, y = .data$fitted_kl),
+      color = "red", linewidth = 1
+    )
+  }
+
+  p
+}
+
+
+#' Plot Cumulative Density Function Used to Pick the Optimal Sample Size
+#'
+#' @param sample_sizes Numeric vector of tested sample sizes.
+#' @param cdf_values Numeric vector, CDF of (1 - KL divergence).
+#' @param probability_threshold Numeric, CDF threshold.
+#' @param optimal_sample_size Integer, the selected sample size.
+#' @param step_size Integer, used to position the annotation.
+#'
+#' @return A `ggplot` object.
+#'
+#' @keywords internal
+.plot_kl_cdf <- function(sample_sizes, cdf_values, probability_threshold, optimal_sample_size, step_size) {
+  cdf_data <- data.frame(sample_size = sample_sizes, cdf = cdf_values)
+
+  ggplot2::ggplot(cdf_data, ggplot2::aes(x = .data$sample_size, y = .data$cdf)) +
+    ggplot2::geom_line(linewidth = 1, color = "darkgreen") +
+    ggplot2::geom_hline(yintercept = probability_threshold, color = "red", linetype = "dashed") +
+    ggplot2::geom_vline(xintercept = optimal_sample_size, color = "red", linetype = "dashed") +
+    ggplot2::labs(
+      title = "Cumulative Density Function of (1 - KL Divergence)",
+      x = "Number of Samples", y = "CDF of (1 - KL divergence)"
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+    ggplot2::annotate("text",
+      x = optimal_sample_size + step_size * 2, y = probability_threshold - 0.05,
+      label = paste("Optimal size:", optimal_sample_size), color = "red"
+    )
+}
