@@ -1,5 +1,62 @@
 # soilsampling News
 
+## Version 0.2.0 (2026-07-21)
+
+### New Features
+
+#### KL Sample Size Optimization
+
+Sample size optimization for cLHS designs based on Kullback-Leibler
+divergence between population and sample distributions
+(Malone et al. 2019).
+
+* `ss_load_rasters()`: Load a multi-layer raster or a directory of
+  single-layer rasters
+* `ss_kl_divergence()`: KL divergence between population and sample
+  distributions
+* `ss_kl_optimize()`: Optimize cLHS sample size via KL divergence,
+  with exponential decay curve fitting
+* `ss_kl_size()`: End-to-end workflow from raster/data frame to
+  optimal sample size, with optional CSV/PNG export
+* `ss_kl_save_plots()`: Save KL divergence and CDF plots independently
+
+#### cLHS + Random Forest Optimization
+
+Two-stage sampling design workflow: a cLHS baseline refined by
+Random Forest simulated annealing (Wadoux et al. 2019).
+
+* `ss_clhs_sample()`: Conditioned Latin hypercube baseline sampling
+  from a raster stack
+* `ss_rf_mse()`: Cross-validated Random Forest MSE as an objective
+  function
+* `ss_rf_optimize()`: Simulated annealing refinement of a sample
+  design to minimize RF MSE
+* `ss_rf_size()`: End-to-end workflow with comparison plots and
+  optional CSV/PNG export
+
+#### Alternative Site Selection
+
+Find environmentally similar alternative sites when original
+sampling locations become inaccessible.
+
+* `ss_alt_similarity()`: Environmental similarity via Mahalanobis,
+  Euclidean, or Gower distance
+* `ss_alt_candidates()`: Generate a candidate site pool (random or
+  systematic grid)
+* `ss_alt_filter_buffer()`: Exclude candidates within a minimum
+  distance of target sites
+* `ss_alt_rank()`: Rank and select the top similar alternatives
+* `ss_alt_standardize_sites()`: Standardize site coordinate data to
+  the package's `site_id`/`x`/`y`/`type` layout
+* `ss_alt_sites()`: End-to-end alternative site selection workflow,
+  with optional CSV export
+
+### Dependencies
+
+* Adds **terra**, **clhs**, **dplyr**, **minpack.lm**,
+  **randomForest**, **gridExtra**, **utils**, and **grDevices** to
+  Imports
+
 ## Version 0.1.0 (2025-01-15)
 
 ### Initial Release
