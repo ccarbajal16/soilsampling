@@ -86,3 +86,48 @@ Standard S3 methods for package objects
   : Print Method for ss_strata Objects
 - [`print(`*`<ss_coverage_efficiency>`*`)`](https://ccarbajal16.github.io/soilsampling/reference/print.ss_coverage_efficiency.md)
   : Print Method for ss_coverage_efficiency Objects
+
+## KL Sample Size Optimization
+
+Sample size optimization for cLHS based on KL divergence
+
+- [`ss_load_rasters()`](https://ccarbajal16.github.io/soilsampling/reference/ss_load_rasters.md)
+  : Load Predictor Rasters
+- [`ss_kl_divergence()`](https://ccarbajal16.github.io/soilsampling/reference/ss_kl_divergence.md)
+  : KL Divergence Between Population and Sample Distributions
+- [`ss_kl_optimize()`](https://ccarbajal16.github.io/soilsampling/reference/ss_kl_optimize.md)
+  : Optimize cLHS Sample Size Using KL Divergence
+- [`ss_kl_size()`](https://ccarbajal16.github.io/soilsampling/reference/ss_kl_size.md)
+  : End-to-End cLHS Sample Size Optimization
+- [`ss_kl_save_plots()`](https://ccarbajal16.github.io/soilsampling/reference/ss_kl_save_plots.md)
+  : Save KL Optimization Plots
+
+## cLHS + Random Forest Optimization
+
+cLHS baseline sampling refined by Random Forest simulated annealing
+
+- [`ss_clhs_sample()`](https://ccarbajal16.github.io/soilsampling/reference/ss_clhs_sample.md)
+  : Conditioned Latin Hypercube Sampling From a Raster Stack
+- [`ss_rf_mse()`](https://ccarbajal16.github.io/soilsampling/reference/ss_rf_mse.md)
+  : Cross-Validated Random Forest MSE for a Sample Design
+- [`ss_rf_optimize()`](https://ccarbajal16.github.io/soilsampling/reference/ss_rf_optimize.md)
+  : Optimize a Sample Design With Random Forest Simulated Annealing
+- [`ss_rf_size()`](https://ccarbajal16.github.io/soilsampling/reference/ss_rf_size.md)
+  : End-to-End cLHS + Random Forest Sampling Optimization
+
+## Alternative Site Selection
+
+Environmentally similar alternative sites for inaccessible locations
+
+- [`ss_alt_similarity()`](https://ccarbajal16.github.io/soilsampling/reference/ss_alt_similarity.md)
+  : Environmental Similarity Between a Target Site and Candidate Sites
+- [`ss_alt_candidates()`](https://ccarbajal16.github.io/soilsampling/reference/ss_alt_candidates.md)
+  : Generate Candidate Sites for Alternative Site Selection
+- [`ss_alt_filter_buffer()`](https://ccarbajal16.github.io/soilsampling/reference/ss_alt_filter_buffer.md)
+  : Exclude Candidate Sites Within a Distance Buffer of Target Sites
+- [`ss_alt_rank()`](https://ccarbajal16.github.io/soilsampling/reference/ss_alt_rank.md)
+  : Rank and Select the Top Similar Alternative Sites
+- [`ss_alt_standardize_sites()`](https://ccarbajal16.github.io/soilsampling/reference/ss_alt_standardize_sites.md)
+  : Standardize Site Coordinate Data
+- [`ss_alt_sites()`](https://ccarbajal16.github.io/soilsampling/reference/ss_alt_sites.md)
+  : Find Alternative Sampling Sites for Inaccessible Locations

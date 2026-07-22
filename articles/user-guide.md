@@ -9,6 +9,7 @@ functions with practical code examples.
 ### Installation
 
 ``` r
+
 # Install from local source
 install.packages("soilsampling", repos = NULL, type = "source")
 
@@ -19,6 +20,7 @@ devtools::install_local("path/to/soilsampling")
 ### Load Package
 
 ``` r
+
 library(soilsampling)
 library(sf)
 #> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE
@@ -32,6 +34,7 @@ set.seed(42)
 For all examples, we’ll use a simple rectangular study area:
 
 ``` r
+
 # Create a polygon
 poly <- st_polygon(list(rbind(
   c(0, 0), c(100, 0), c(100, 50), c(0, 50), c(0, 0)
@@ -52,6 +55,7 @@ Creates compact geographical strata using k-means clustering.
 **Basic Usage:**
 
 ``` r
+
 # Create 25 compact strata
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
@@ -70,6 +74,7 @@ print(strata)
 **With Equal-Area Strata:**
 
 ``` r
+
 # Create 20 equal-area strata
 strata_equal <- ss_stratify(
   study_area,
@@ -82,6 +87,7 @@ strata_equal <- ss_stratify(
 **With Prior Points:**
 
 ``` r
+
 # Existing sample locations
 prior_pts <- st_as_sf(
   data.frame(x = c(25, 75), y = c(25, 25)),
@@ -100,6 +106,7 @@ strata_prior <- ss_stratify(
 **Advanced Parameters:**
 
 ``` r
+
 # Fine-tune stratification
 strata_custom <- ss_stratify(
   study_area,
@@ -109,34 +116,34 @@ strata_custom <- ss_stratify(
   equal_area = FALSE,
   verbose = TRUE
 )
-#> 2025-12-26 02:33:22 | Optimizing configuration 1
+#> 2026-07-22 04:34:22 | Optimizing configuration 1
 #>     Current MSSD: 33.7103
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 2
+#> 2026-07-22 04:34:22 | Optimizing configuration 2
 #>     Current MSSD: 36.4875
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 3
+#> 2026-07-22 04:34:23 | Optimizing configuration 3
 #>     Current MSSD: 34.0026
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 4
+#> 2026-07-22 04:34:23 | Optimizing configuration 4
 #>     Current MSSD: 37.1821
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 5
+#> 2026-07-22 04:34:23 | Optimizing configuration 5
 #>     Current MSSD: 35.1059
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 6
+#> 2026-07-22 04:34:23 | Optimizing configuration 6
 #>     Current MSSD: 41.1071
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 7
+#> 2026-07-22 04:34:23 | Optimizing configuration 7
 #>     Current MSSD: 40.3993
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 8
+#> 2026-07-22 04:34:23 | Optimizing configuration 8
 #>     Current MSSD: 35.2979
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 9
+#> 2026-07-22 04:34:23 | Optimizing configuration 9
 #>     Current MSSD: 36.664
 #>     Best MSSD: 33.7103
-#> 2025-12-26 02:33:22 | Optimizing configuration 10
+#> 2026-07-22 04:34:23 | Optimizing configuration 10
 #>     Current MSSD: 42.7942
 #>     Best MSSD: 33.7103
 ```
@@ -153,6 +160,7 @@ area.
 **Basic Usage:**
 
 ``` r
+
 # Select 30 random points
 samples_random <- ss_random(study_area, n = 30)
 print(samples_random)
@@ -164,6 +172,7 @@ print(samples_random)
 **With Seed for Reproducibility:**
 
 ``` r
+
 # Reproducible random sampling
 samples_random_rep <- ss_random(study_area, n = 25, seed = 123)
 ```
@@ -177,6 +186,7 @@ Random sampling within each stratum.
 **Basic Usage:**
 
 ``` r
+
 # Create strata first
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
@@ -193,6 +203,7 @@ print(samples_strat)
 **Multiple Points per Stratum:**
 
 ``` r
+
 # Sample 2 points per stratum
 samples_strat2 <- ss_stratified(strata, n_per_stratum = 2, seed = 456)
 ```
@@ -200,6 +211,7 @@ samples_strat2 <- ss_stratified(strata, n_per_stratum = 2, seed = 456)
 **With Different Seed:**
 
 ``` r
+
 # Different random realization
 samples_strat3 <- ss_stratified(strata, n_per_stratum = 1, seed = 789)
 ```
@@ -213,6 +225,7 @@ Purposive sampling at stratum centroids for optimal spatial coverage.
 **From Strata Object:**
 
 ``` r
+
 # Use pre-computed strata
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 samples_cov <- ss_coverage(strata)
@@ -226,6 +239,7 @@ print(samples_cov)
 **Direct Approach:**
 
 ``` r
+
 # All-in-one: stratify and sample
 samples_cov_direct <- ss_coverage(
   study_area,
@@ -237,6 +251,7 @@ samples_cov_direct <- ss_coverage(
 **With Prior Points:**
 
 ``` r
+
 # Prior points marked differently
 prior_pts <- st_as_sf(
   data.frame(x = c(50), y = c(25)),
@@ -262,6 +277,7 @@ Coverage sampling with strata of equal size.
 **Basic Usage:**
 
 ``` r
+
 # Create 25 equal-area strata and sample
 samples_eq <- ss_coverage_equal_area(
   study_area,
@@ -278,6 +294,7 @@ print(samples_eq)
 **Custom Parameters:**
 
 ``` r
+
 # Fine-tuned equal-area sampling
 samples_eq_custom <- ss_coverage_equal_area(
   study_area,
@@ -296,6 +313,7 @@ Feature-based sampling using D-optimal experimental design.
 **With sf Object and Features:**
 
 ``` r
+
 # Create grid with features
 strata <- ss_stratify(study_area, n_strata = 100, n_try = 3)
 cells_sf <- strata$cells
@@ -323,6 +341,7 @@ print(samples_maxvol)
 **With Feature Matrix:**
 
 ``` r
+
 # Custom feature matrix
 n_loc <- 100
 feature_mat <- matrix(
@@ -352,6 +371,7 @@ samples_maxvol_mat <- ss_maxvol(
 **With Minimum Distance Constraint:**
 
 ``` r
+
 # Prevent spatial clustering
 samples_maxvol_dist <- ss_maxvol(
   cells_sf,
@@ -366,6 +386,7 @@ samples_maxvol_dist <- ss_maxvol(
 **Advanced Options:**
 
 ``` r
+
 # Fine-tune maxvol algorithm
 samples_maxvol_adv <- ss_maxvol(
   cells_sf,
@@ -393,6 +414,7 @@ Sampling for combining samples from multiple locations.
 **Basic Usage:**
 
 ``` r
+
 # Create 3 composite samples from 20 strata
 samples_comp <- ss_composite(
   study_area,
@@ -411,6 +433,7 @@ print(samples_comp)
 **More Composites:**
 
 ``` r
+
 # Create 5 composite samples
 samples_comp5 <- ss_composite(
   study_area,
@@ -431,6 +454,7 @@ Main plotting function for stratification and samples.
 **Plot Strata Only:**
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 ss_plot(strata)
 ```
@@ -440,6 +464,7 @@ ss_plot(strata)
 **Plot Strata with Samples:**
 
 ``` r
+
 samples <- ss_stratified(strata, n_per_stratum = 1)
 ss_plot(strata, samples = samples)
 ```
@@ -449,6 +474,7 @@ ss_plot(strata, samples = samples)
 **Plot with Prior Points:**
 
 ``` r
+
 prior_pts <- st_as_sf(
   data.frame(x = c(25, 75), y = c(25, 25)),
   coords = c("x", "y")
@@ -476,6 +502,7 @@ Plot sampling points without stratification.
 **Basic Usage:**
 
 ``` r
+
 samples <- ss_random(study_area, n = 30)
 ss_plot_samples(samples)
 ```
@@ -485,6 +512,7 @@ ss_plot_samples(samples)
 **Composite Samples:**
 
 ``` r
+
 samples_comp <- ss_composite(study_area, n_strata = 20, n_composites = 3)
 ss_plot_samples(samples_comp)
 ```
@@ -500,6 +528,7 @@ Generic plot methods for ss_strata and ss_samples objects.
 **Plot Strata:**
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 20, n_try = 5)
 plot(strata)
 ```
@@ -509,6 +538,7 @@ plot(strata)
 **Plot Samples:**
 
 ``` r
+
 samples <- ss_coverage(study_area, n_strata = 25, n_try = 5)
 plot(samples)
 ```
@@ -526,6 +556,7 @@ Comprehensive summary of stratification or sampling results.
 **For Strata:**
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 summary(strata)
 #> Soil Sampling Stratification Summary
@@ -550,6 +581,7 @@ summary(strata)
 **For Samples:**
 
 ``` r
+
 samples <- ss_coverage(strata)
 summary_samples <- ss_summary(samples)
 print(summary_samples)
@@ -566,6 +598,7 @@ print(summary_samples)
 Special summary for maxvol sampling results.
 
 ``` r
+
 # Create grid with features
 strata <- ss_stratify(study_area, n_strata = 100, n_try = 3)
 cells_sf <- strata$cells
@@ -608,6 +641,7 @@ print(summary_maxvol)
 **Print Strata:**
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 20, n_try = 5)
 print(strata)
 #> Soil Sampling Stratification
@@ -623,6 +657,7 @@ print(strata)
 **Print Samples:**
 
 ``` r
+
 samples <- ss_random(study_area, n = 25)
 print(samples)
 #> Simple Random Sampling 
@@ -637,6 +672,7 @@ print(samples)
 **Summary of Strata:**
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 summary(strata)
 #> Soil Sampling Stratification Summary
@@ -661,6 +697,7 @@ summary(strata)
 **Summary of Samples:**
 
 ``` r
+
 samples <- ss_coverage(strata)
 summary(samples)
 #> Spatial Coverage Sampling  - Summary
@@ -684,6 +721,7 @@ summary(samples)
 ### 5.1 `ss_n_strata()` - Get Number of Strata
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 n_strata <- ss_n_strata(strata)
 print(n_strata)
@@ -695,6 +733,7 @@ print(n_strata)
 ### 5.2 `ss_n_samples()` - Get Number of Samples
 
 ``` r
+
 samples <- ss_random(study_area, n = 30)
 n_samples <- ss_n_samples(samples)
 print(n_samples)
@@ -706,6 +745,7 @@ print(n_samples)
 ### 5.3 `ss_get_samples()` - Extract Samples as sf Object
 
 ``` r
+
 samples <- ss_coverage(study_area, n_strata = 20, n_try = 5)
 samples_sf <- ss_get_samples(samples)
 head(samples_sf)
@@ -728,6 +768,7 @@ head(samples_sf)
 ### 5.4 `ss_to_sf()` - Convert to sf Object
 
 ``` r
+
 samples <- ss_random(study_area, n = 25)
 samples_sf <- ss_to_sf(samples)
 class(samples_sf)
@@ -754,6 +795,7 @@ head(samples_sf)
 Extract coordinates and attributes as a data frame.
 
 ``` r
+
 samples <- ss_coverage(study_area, n_strata = 20, n_try = 5)
 coords_df <- ss_to_data_frame(samples)
 head(coords_df)
@@ -771,6 +813,7 @@ head(coords_df)
 ### 5.6 `ss_area()` - Get Stratum Areas
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 areas <- ss_area(strata)
 head(areas)
@@ -783,6 +826,7 @@ head(areas)
 ### 5.7 `ss_relative_area()` - Get Relative Stratum Areas
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 rel_areas <- ss_relative_area(strata)
 head(rel_areas)
@@ -799,6 +843,7 @@ sum(rel_areas)  # Should sum to 1
 ### 6.1 Workflow 1: Simple Random Sampling
 
 ``` r
+
 # 1. Create study area
 study_area <- st_sf(geometry = st_sfc(
   st_polygon(list(rbind(
@@ -817,6 +862,7 @@ ss_plot_samples(samples)
 ![](user-guide_files/figure-html/unnamed-chunk-45-1.png)
 
 ``` r
+
 
 # 4. Export coordinates
 coords <- ss_to_data_frame(samples)
@@ -845,6 +891,7 @@ summary(samples)
 ### 6.2 Workflow 2: Stratified Sampling
 
 ``` r
+
 # 1. Create compact strata
 set.seed(123)
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
@@ -859,6 +906,7 @@ ss_plot(strata, samples = samples)
 ![](user-guide_files/figure-html/unnamed-chunk-46-1.png)
 
 ``` r
+
 
 # 4. Get information
 print(paste("Number of strata:", ss_n_strata(strata)))
@@ -877,6 +925,7 @@ print(paste("Area range:", round(min(areas), 2), "-", round(max(areas), 2)))
 ### 6.3 Workflow 3: Spatial Coverage Sampling
 
 ``` r
+
 # 1. All-in-one approach
 set.seed(456)
 samples <- ss_coverage(study_area, n_strata = 30, n_try = 10)
@@ -888,6 +937,7 @@ plot(samples)
 ![](user-guide_files/figure-html/unnamed-chunk-47-1.png)
 
 ``` r
+
 
 # 3. Get summary statistics
 summary_info <- ss_summary(samples)
@@ -909,6 +959,7 @@ samples_sf <- ss_to_sf(samples)
 ### 6.4 Workflow 4: Maxvol Optimal Design
 
 ``` r
+
 # 1. Create grid with features
 strata <- ss_stratify(study_area, n_strata = 100, n_try = 5)
 cells <- strata$cells
@@ -950,6 +1001,7 @@ ss_plot_samples(samples)
 
 ``` r
 
+
 # 6. Get maxvol summary
 summary_maxvol <- ss_summary.maxvol(samples)
 #> Maxvol Optimal Design Sampling - Summary
@@ -976,6 +1028,7 @@ print(summary_maxvol)
 ### 6.5 Workflow 5: Composite Sampling
 
 ``` r
+
 # 1. Create composite samples
 set.seed(111)
 samples <- ss_composite(
@@ -992,6 +1045,7 @@ ss_plot_samples(samples)
 ![](user-guide_files/figure-html/unnamed-chunk-49-1.png)
 
 ``` r
+
 
 # 3. Get composite assignments
 samples_sf <- ss_to_sf(samples)
@@ -1015,6 +1069,7 @@ head(coords)
 ### 6.6 Workflow 6: Working with Prior Points
 
 ``` r
+
 # 1. Define existing sample locations
 prior_points <- st_as_sf(
   data.frame(x = c(20, 80), y = c(15, 35)),
@@ -1040,6 +1095,7 @@ ss_plot(strata, samples = samples)
 
 ``` r
 
+
 # 5. Check which are prior points
 samples_sf <- ss_to_sf(samples)
 table(samples_sf$is_prior)
@@ -1055,6 +1111,7 @@ table(samples_sf$is_prior)
 ### 7.1 Export to CSV
 
 ``` r
+
 # Get coordinates as data frame
 samples <- ss_coverage(study_area, n_strata = 25, n_try = 5)
 coords <- ss_to_data_frame(samples)
@@ -1068,6 +1125,7 @@ write.csv(coords, "sampling_points.csv", row.names = FALSE)
 ### 7.2 Export to Shapefile
 
 ``` r
+
 # Convert to sf object
 samples_sf <- ss_to_sf(samples)
 
@@ -1080,6 +1138,7 @@ st_write(samples_sf, "sampling_points.shp")
 ### 7.3 Export to GeoPackage
 
 ``` r
+
 # Write GeoPackage
 st_write(samples_sf, "sampling_points.gpkg")
 ```
@@ -1089,6 +1148,7 @@ st_write(samples_sf, "sampling_points.gpkg")
 ### 7.4 Export to GeoJSON
 
 ``` r
+
 # Write GeoJSON
 st_write(samples_sf, "sampling_points.geojson")
 ```
@@ -1100,6 +1160,7 @@ st_write(samples_sf, "sampling_points.geojson")
 ### 8.1 Visual Comparison
 
 ``` r
+
 # Set seed for consistency
 set.seed(999)
 
@@ -1124,13 +1185,13 @@ samples_comp <- ss_composite(study_area, n_strata = 20, n_composites = 4)
 
 ### 8.2 When to Use Each Method
 
-| Method                                                                                     | Best For               | Advantages          | Disadvantages                |
-|--------------------------------------------------------------------------------------------|------------------------|---------------------|------------------------------|
-| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md)         | Simple designs         | Easy to implement   | May cluster                  |
-| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Design-based inference | Unbiased estimates  | Requires good stratification |
-| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md)     | Spatial interpolation  | Good spatial spread | Not random                   |
-| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md)         | Feature diversity      | Optimal for kriging | Needs feature data           |
-| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md)   | Cost reduction         | Fewer lab analyses  | Less spatial detail          |
+| Method | Best For | Advantages | Disadvantages |
+|----|----|----|----|
+| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md) | Simple designs | Easy to implement | May cluster |
+| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Design-based inference | Unbiased estimates | Requires good stratification |
+| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md) | Spatial interpolation | Good spatial spread | Not random |
+| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md) | Feature diversity | Optimal for kriging | Needs feature data |
+| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md) | Cost reduction | Fewer lab analyses | Less spatial detail |
 
 ------------------------------------------------------------------------
 
@@ -1139,6 +1200,7 @@ samples_comp <- ss_composite(study_area, n_strata = 20, n_composites = 4)
 ### 9.1 Choosing Number of Strata
 
 ``` r
+
 # Rule of thumb: n_strata ≈ sqrt(study area / typical mapping unit)
 # For our 5000 unit² area with ~100 unit² mapping units:
 n_strata_suggested <- round(sqrt(5000 / 100))
@@ -1151,6 +1213,7 @@ print(paste("Suggested strata:", n_strata_suggested))
 ### 9.2 Using Multiple Tries
 
 ``` r
+
 # Always use n_try > 1 to avoid local optima
 strata_few <- ss_stratify(study_area, n_strata = 25, n_try = 1)
 strata_many <- ss_stratify(study_area, n_strata = 25, n_try = 10)
@@ -1167,6 +1230,7 @@ print(paste("Many tries MSSD:", round(strata_many$mssd, 2)))
 ### 9.3 Checking Convergence
 
 ``` r
+
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
 # Check if algorithm converged
@@ -1183,6 +1247,7 @@ print(paste("MSSD:", round(strata$mssd, 2)))
 ### 9.4 Reproducibility
 
 ``` r
+
 # Always set seed for reproducible results
 set.seed(42)
 samples1 <- ss_random(study_area, n = 20)
@@ -1204,6 +1269,7 @@ identical(coords1, coords2)
 ### 10.1 Study Area Issues
 
 ``` r
+
 # Empty geometry will fail
 empty_poly <- st_polygon(list(matrix(numeric(0), ncol = 2)))
 #> Error in `y[1, ]`:
@@ -1216,6 +1282,7 @@ empty_poly <- st_polygon(list(matrix(numeric(0), ncol = 2)))
 ### 10.2 Too Many Strata
 
 ``` r
+
 # Too many strata for small area
 # ss_stratify(study_area, n_strata = 10000, n_try = 5)
 # Will warn about grid resolution
@@ -1226,6 +1293,7 @@ empty_poly <- st_polygon(list(matrix(numeric(0), ncol = 2)))
 ### 10.3 Maxvol Requirements
 
 ``` r
+
 # n must be >= number of features
 feature_mat <- matrix(rnorm(500), ncol = 5)
 coords_mat <- cbind(x = 1:100, y = 1:100)
@@ -1247,6 +1315,7 @@ samples <- ss_maxvol(feature_mat, n = 10, coords = coords_mat)
 ### 11.1 Custom Grid Resolution
 
 ``` r
+
 # Higher resolution for detailed areas
 strata_fine <- ss_stratify(
   study_area,
@@ -1269,6 +1338,7 @@ strata_coarse <- ss_stratify(
 ### 11.2 Working with Real Shapefiles
 
 ``` r
+
 # Read shapefile
 study_area <- st_read("path/to/study_area.shp")
 
@@ -1290,6 +1360,7 @@ st_write(samples_sf, "sampling_points.gpkg")
 ### 11.3 Integrating with Other Packages
 
 ``` r
+
 # Use with terra for raster data
 library(terra)
 dem <- rast("dem.tif")

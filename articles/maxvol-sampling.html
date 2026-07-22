@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Maxvol Optimal Design Sampling • soilsampling</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Roboto_Slab-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -65,7 +65,7 @@
                         <h4 data-toc-skip class="author">soilsampling
 Package Authors</h4>
             
-            <h4 data-toc-skip class="date">2025-12-26</h4>
+            <h4 data-toc-skip class="date">2026-07-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ccarbajal16/soilsampling/blob/main/vignettes/maxvol-sampling.Rmd" class="external-link"><code>vignettes/maxvol-sampling.Rmd</code></a></small>
       <div class="d-none name"><code>maxvol-sampling.Rmd</code></div>
@@ -116,7 +116,7 @@ represents features), the maxvol algorithm selects
 rows that form a submatrix
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐀</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\mathbf{A}}</annotation></semantics></math>
 with approximately maximum determinant:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐀</mi><mo accent="true">̂</mo></mover><mo>=</mo><mo>arg</mo><munder><mo>max</mo><mtext mathvariant="normal">submatrix</mtext></munder><mrow><mo stretchy="true" form="prefix">|</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐀</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">|</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐀</mi><mo accent="true">̂</mo></mover><mo>=</mo><mrow><mi mathvariant="normal">arg</mi><mo>⁡</mo></mrow><munder><mi mathvariant="normal">max</mi><mtext mathvariant="normal">submatrix</mtext></munder><mo stretchy="false" form="prefix">|</mo><mrow><mi mathvariant="normal">det</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>𝐀</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">
 \hat{\mathbf{A}} = \arg\max_{\text{submatrix}} |\det(\mathbf{A}_k)|
 </annotation></semantics></math></p>
 <p>Geometrically, the determinant represents the volume of the
@@ -155,7 +155,7 @@ to zero mean and unit variance</p></li>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
 random rows</li>
 <li>Compute coefficient matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐁</mi><mo>=</mo><mi>𝐀</mi><mo>⋅</mo><msup><mover><mi>𝐀</mi><mo accent="true">̂</mo></mover><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbf{B} = \mathbf{A} \cdot \hat{\mathbf{A}}^{-1}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐁</mi><mo>=</mo><mi>𝐀</mi><mo>⋅</mo><msup><mover><mi>𝐀</mi><mo accent="true">̂</mo></mover><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbf{B} = \mathbf{A} \cdot \hat{\mathbf{A}}^{-1}</annotation></semantics></math>
 </li>
 <li>Iteratively swap rows to maximize volume</li>
 <li>Apply distance constraints if specified</li>
@@ -487,13 +487,13 @@ unit diameter</li>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span>  <span class="co"># For raster processing</span></span>
 <span></span>
 <span><span class="co"># Load DEM</span></span>
-<span><span class="va">dem</span> <span class="op">&lt;-</span> <span class="fu">rast</span><span class="op">(</span><span class="st">"path/to/dem.tif"</span><span class="op">)</span></span>
+<span><span class="va">dem</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"path/to/dem.tif"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute terrain features</span></span>
-<span><span class="va">slope</span> <span class="op">&lt;-</span> <span class="fu">terrain</span><span class="op">(</span><span class="va">dem</span>, <span class="st">"slope"</span><span class="op">)</span></span>
-<span><span class="va">aspect</span> <span class="op">&lt;-</span> <span class="fu">terrain</span><span class="op">(</span><span class="va">dem</span>, <span class="st">"aspect"</span><span class="op">)</span></span>
-<span><span class="va">tpi</span> <span class="op">&lt;-</span> <span class="fu">terrain</span><span class="op">(</span><span class="va">dem</span>, <span class="st">"TPI"</span><span class="op">)</span></span>
-<span><span class="va">tri</span> <span class="op">&lt;-</span> <span class="fu">terrain</span><span class="op">(</span><span class="va">dem</span>, <span class="st">"TRI"</span><span class="op">)</span></span>
+<span><span class="va">slope</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">dem</span>, <span class="st">"slope"</span><span class="op">)</span></span>
+<span><span class="va">aspect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">dem</span>, <span class="st">"aspect"</span><span class="op">)</span></span>
+<span><span class="va">tpi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">dem</span>, <span class="st">"TPI"</span><span class="op">)</span></span>
+<span><span class="va">tri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">dem</span>, <span class="st">"TRI"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute TWI (requires flow direction)</span></span>
 <span><span class="co"># ... (depends on your workflow)</span></span>
@@ -502,7 +502,7 @@ unit diameter</li>
 <span><span class="va">features_stack</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">dem</span>, <span class="va">slope</span>, <span class="va">aspect</span>, <span class="va">tpi</span>, <span class="va">tri</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Convert to points</span></span>
-<span><span class="va">feature_points</span> <span class="op">&lt;-</span> <span class="fu">as.points</span><span class="op">(</span><span class="va">features_stack</span><span class="op">)</span></span>
+<span><span class="va">feature_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.points.html" class="external-link">as.points</a></span><span class="op">(</span><span class="va">features_stack</span><span class="op">)</span></span>
 <span><span class="va">feature_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">feature_points</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -549,7 +549,7 @@ unit diameter</li>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create custom feature matrix</span></span>
 <span><span class="va">coords_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html" class="external-link">st_coordinates</a></span><span class="op">(</span><span class="va">grid_sf</span><span class="op">)</span></span>
-<span><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">coords_mat</span><span class="op">)</span></span>
+<span><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">coords_mat</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">custom_features</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -591,10 +591,10 @@ unit diameter</li>
 </h3>
 <ul>
 <li>Time complexity:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo>⋅</mo><mi>m</mi><mo>⋅</mo><msup><mi>n</mi><mn>2</mn></msup><mo>⋅</mo><mtext mathvariant="normal">iterations</mtext><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">O(k \cdot m \cdot n^2 \cdot \text{iterations})</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>⋅</mo><mi>m</mi><mo>⋅</mo><msup><mi>n</mi><mn>2</mn></msup><mo>⋅</mo><mtext mathvariant="normal">iterations</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(k \cdot m \cdot n^2 \cdot \text{iterations})</annotation></semantics></math>
 </li>
 <li>Space complexity:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">O(m \cdot n)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">O(m \cdot n)</annotation></semantics></math>
 </li>
 </ul>
 <p>where: -
@@ -617,7 +617,7 @@ unit diameter</li>
 <span><span class="co"># (e.g., remove unsuitable areas)</span></span>
 <span></span>
 <span><span class="co"># Option 3: Sample from candidate pool</span></span>
-<span><span class="va">candidate_sample</span> <span class="op">&lt;-</span> <span class="va">grid_sf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grid_sf</span><span class="op">)</span>, <span class="fl">500</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
+<span><span class="va">candidate_sample</span> <span class="op">&lt;-</span> <span class="va">grid_sf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grid_sf</span><span class="op">)</span>, <span class="fl">500</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -670,7 +670,7 @@ geographical strata by k-means. <em>Computers &amp; Geosciences</em>,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

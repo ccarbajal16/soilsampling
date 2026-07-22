@@ -22,6 +22,7 @@ algorithms, requiring no Java or additional GIS software.
 ## Installation
 
 ``` r
+
 # Install from local source
 install.packages(".", repos = NULL, type = "source")
 
@@ -32,6 +33,7 @@ devtools::install()
 ## Quick Start
 
 ``` r
+
 library(soilsampling)
 library(sf)
 
@@ -45,6 +47,7 @@ study_area <- st_sf(geometry = st_sfc(poly))
 ### Spatial Coverage Sampling
 
 ``` r
+
 # Set seed for reproducibility
 set.seed(42)
 
@@ -67,6 +70,7 @@ ss_plot(samples_coverage)
 ### Stratified Random Sampling
 
 ``` r
+
 # First create strata
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
@@ -82,6 +86,7 @@ ss_plot(strata, samples = samples_stratified)
 ### Simple Random Sampling
 
 ``` r
+
 # Simple random sampling
 samples_random <- ss_random(study_area, n = 25)
 
@@ -96,6 +101,7 @@ ss_plot_samples(samples_random)
 ### As Data Frame
 
 ``` r
+
 # Get coordinates as data frame
 coords <- ss_to_data_frame(samples_coverage)
 head(coords)
@@ -111,6 +117,7 @@ head(coords)
 ### As CSV
 
 ``` r
+
 # Export to CSV
 write.csv(coords, "sampling_points.csv", row.names = FALSE)
 ```
@@ -118,6 +125,7 @@ write.csv(coords, "sampling_points.csv", row.names = FALSE)
 ### As Shapefile or GeoPackage
 
 ``` r
+
 # Get as sf object
 samples_sf <- ss_to_sf(samples_coverage)
 
@@ -133,6 +141,7 @@ st_write(samples_sf, "sampling_points.shp")
 In practice, you would load a study area from a shapefile:
 
 ``` r
+
 # Read study area from shapefile
 study_area <- st_read("path/to/study_area.shp")
 
@@ -147,13 +156,13 @@ write.csv(coords, "field_sampling_points.csv", row.names = FALSE)
 
 ## When to Use Each Method
 
-| Method                                                                                     | Best For                     | Inference Type | Key Features             |
-|--------------------------------------------------------------------------------------------|------------------------------|----------------|--------------------------|
-| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md)     | Interpolation (kriging)      | Model-based    | Optimal spatial coverage |
-| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Estimating means/totals      | Design-based   | Valid probability sample |
-| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md)         | Simple design-based analysis | Design-based   | Unbiased estimates       |
-| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md)         | Optimal feature coverage     | Model-based    | D-optimal design         |
-| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md)   | Reducing laboratory costs    | Design-based   | Combined samples         |
+| Method | Best For | Inference Type | Key Features |
+|----|----|----|----|
+| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md) | Interpolation (kriging) | Model-based | Optimal spatial coverage |
+| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Estimating means/totals | Design-based | Valid probability sample |
+| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md) | Simple design-based analysis | Design-based | Unbiased estimates |
+| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md) | Optimal feature coverage | Model-based | D-optimal design |
+| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md) | Reducing laboratory costs | Design-based | Combined samples |
 
 ## Sampling Methods Comparison
 

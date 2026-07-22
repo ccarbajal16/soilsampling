@@ -26,6 +26,7 @@ sampling schemes. It implements:
 ### Install from GitHub (Recommended)
 
 ``` r
+
 # Using pak (fastest)
 pak::pak("ccarbajal16/soilsampling")
 
@@ -36,6 +37,7 @@ devtools::install_github("ccarbajal16/soilsampling")
 ### Install from Local Source
 
 ``` r
+
 # Install from local directory
 install.packages(".", repos = NULL, type = "source")
 
@@ -52,6 +54,7 @@ devtools::install_local("path/to/soilsampling")
 ## Quick Start
 
 ``` r
+
 library(soilsampling)
 library(sf)
 
@@ -80,6 +83,7 @@ head(coords)
 Select locations uniformly at random:
 
 ``` r
+
 samples <- ss_random(study_area, n = 30)
 ss_plot_samples(samples)
 ```
@@ -89,6 +93,7 @@ ss_plot_samples(samples)
 Create strata first, then sample randomly within each:
 
 ``` r
+
 # Create 25 compact strata
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
@@ -102,6 +107,7 @@ ss_plot(strata, samples = samples)
 Place samples at stratum centroids for optimal spatial coverage:
 
 ``` r
+
 # Direct approach
 samples <- ss_coverage(study_area, n_strata = 25, n_try = 5)
 
@@ -117,6 +123,7 @@ ss_plot(samples)
 Incorporate existing sampling locations:
 
 ``` r
+
 # Existing sample locations
 prior_pts <- st_as_sf(
   data.frame(x = c(25, 75), y = c(25, 25)),
@@ -140,6 +147,7 @@ ss_plot(samples)  # Prior points shown with different symbol
 Create strata of equal size:
 
 ``` r
+
 samples <- ss_coverage_equal_area(study_area, n_strata = 25, n_try = 5)
 ```
 
@@ -148,6 +156,7 @@ samples <- ss_coverage_equal_area(study_area, n_strata = 25, n_try = 5)
 For combining samples from multiple locations:
 
 ``` r
+
 # Create 3 composite samples from 20 equal-area strata
 samples <- ss_composite(study_area, n_strata = 20, n_composites = 3)
 ss_plot(samples)  # Different symbols for each composite
@@ -159,6 +168,7 @@ Feature-based sampling using D-optimal experimental design to maximize
 diversity:
 
 ``` r
+
 # Create a grid with terrain features
 strata <- ss_stratify(study_area, n_strata = 100, n_try = 5)
 cells_sf <- strata$cells
@@ -198,6 +208,7 @@ stratification:
 Evaluate how uniformly cells are distributed across strata:
 
 ``` r
+
 # Create stratification
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
@@ -215,6 +226,7 @@ Coefficient**: Standard inequality measure (0 = perfect equality) -
 **Comparing stratification methods:**
 
 ``` r
+
 # Regular stratification
 strata_regular <- ss_stratify(study_area, n_strata = 20, n_try = 5)
 
@@ -236,6 +248,7 @@ cat("Equal-area CV:", eff_equal$cv, "\n")
 Compute distance from cells or samples to stratum centroids:
 
 ``` r
+
 # For stratification
 dist_summary <- ss_distance_summary(strata)
 print(dist_summary)
@@ -257,6 +270,7 @@ unusual geometry
 ## Working with Shapefiles
 
 ``` r
+
 # Read study area
 study_area <- st_read("path/to/study_area.shp")
 
@@ -277,57 +291,57 @@ st_write(samples_sf, "sampling_points.gpkg")
 
 ### Stratification
 
-| Function                                                                               | Description                                      |
-|----------------------------------------------------------------------------------------|--------------------------------------------------|
+| Function | Description |
+|----|----|
 | [`ss_stratify()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratify.md) | Create compact geographical strata using k-means |
 
 ### Sampling
 
-| Function                                                                                                     | Description                                    |
-|--------------------------------------------------------------------------------------------------------------|------------------------------------------------|
-| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md)                           | Simple random sampling                         |
-| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md)                   | Stratified random sampling                     |
-| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md)                       | Spatial coverage sampling (centroids)          |
-| [`ss_coverage_equal_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage_equal_area.md) | Coverage sampling with equal-area strata       |
-| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md)                           | Maxvol optimal design sampling (feature-based) |
-| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md)                     | Composite sampling                             |
+| Function | Description |
+|----|----|
+| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md) | Simple random sampling |
+| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Stratified random sampling |
+| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md) | Spatial coverage sampling (centroids) |
+| [`ss_coverage_equal_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage_equal_area.md) | Coverage sampling with equal-area strata |
+| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md) | Maxvol optimal design sampling (feature-based) |
+| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md) | Composite sampling |
 
 ### Visualization
 
-| Function                                                                                       | Description                        |
-|------------------------------------------------------------------------------------------------|------------------------------------|
-| [`ss_plot()`](https://ccarbajal16.github.io/soilsampling/reference/ss_plot.md)                 | Plot stratification and/or samples |
-| [`ss_plot_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_plot_samples.md) | Plot sampling points only          |
+| Function | Description |
+|----|----|
+| [`ss_plot()`](https://ccarbajal16.github.io/soilsampling/reference/ss_plot.md) | Plot stratification and/or samples |
+| [`ss_plot_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_plot_samples.md) | Plot sampling points only |
 
 ### Validation
 
-| Function                                                                                                     | Description                                                 |
-|--------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| [`ss_coverage_efficiency()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage_efficiency.md) | Assess uniformity of cell distribution across strata        |
-| [`ss_distance_summary()`](https://ccarbajal16.github.io/soilsampling/reference/ss_distance_summary.md)       | Compute distance statistics from cells/samples to centroids |
+| Function | Description |
+|----|----|
+| [`ss_coverage_efficiency()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage_efficiency.md) | Assess uniformity of cell distribution across strata |
+| [`ss_distance_summary()`](https://ccarbajal16.github.io/soilsampling/reference/ss_distance_summary.md) | Compute distance statistics from cells/samples to centroids |
 
 ### Utilities
 
-| Function                                                                                         | Description                            |
-|--------------------------------------------------------------------------------------------------|----------------------------------------|
-| [`ss_to_sf()`](https://ccarbajal16.github.io/soilsampling/reference/ss_to_sf.md)                 | Convert to sf object                   |
+| Function | Description |
+|----|----|
+| [`ss_to_sf()`](https://ccarbajal16.github.io/soilsampling/reference/ss_to_sf.md) | Convert to sf object |
 | [`ss_to_data_frame()`](https://ccarbajal16.github.io/soilsampling/reference/ss_to_data_frame.md) | Convert to data frame with coordinates |
-| [`ss_summary()`](https://ccarbajal16.github.io/soilsampling/reference/ss_summary.md)             | Get summary statistics                 |
-| [`ss_get_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_get_samples.md)     | Extract samples sf object              |
-| [`ss_n_strata()`](https://ccarbajal16.github.io/soilsampling/reference/ss_n_strata.md)           | Get number of strata                   |
-| [`ss_n_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_n_samples.md)         | Get number of samples                  |
-| [`ss_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_area.md)                   | Get stratum areas                      |
-| [`ss_relative_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_relative_area.md) | Get relative stratum areas             |
+| [`ss_summary()`](https://ccarbajal16.github.io/soilsampling/reference/ss_summary.md) | Get summary statistics |
+| [`ss_get_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_get_samples.md) | Extract samples sf object |
+| [`ss_n_strata()`](https://ccarbajal16.github.io/soilsampling/reference/ss_n_strata.md) | Get number of strata |
+| [`ss_n_samples()`](https://ccarbajal16.github.io/soilsampling/reference/ss_n_samples.md) | Get number of samples |
+| [`ss_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_area.md) | Get stratum areas |
+| [`ss_relative_area()`](https://ccarbajal16.github.io/soilsampling/reference/ss_relative_area.md) | Get relative stratum areas |
 
 ## When to Use Each Method
 
-| Method                                                                                     | Best For                            | Inference Type |
-|--------------------------------------------------------------------------------------------|-------------------------------------|----------------|
-| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md)     | Interpolation (kriging)             | Model-based    |
-| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md)         | Feature diversity, D-optimal design | Model-based    |
-| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Estimating means/totals             | Design-based   |
-| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md)         | Simple design-based analysis        | Design-based   |
-| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md)   | Reducing laboratory costs           | Design-based   |
+| Method | Best For | Inference Type |
+|----|----|----|
+| [`ss_coverage()`](https://ccarbajal16.github.io/soilsampling/reference/ss_coverage.md) | Interpolation (kriging) | Model-based |
+| [`ss_maxvol()`](https://ccarbajal16.github.io/soilsampling/reference/ss_maxvol.md) | Feature diversity, D-optimal design | Model-based |
+| [`ss_stratified()`](https://ccarbajal16.github.io/soilsampling/reference/ss_stratified.md) | Estimating means/totals | Design-based |
+| [`ss_random()`](https://ccarbajal16.github.io/soilsampling/reference/ss_random.md) | Simple design-based analysis | Design-based |
+| [`ss_composite()`](https://ccarbajal16.github.io/soilsampling/reference/ss_composite.md) | Reducing laboratory costs | Design-based |
 
 ## Algorithm Details
 

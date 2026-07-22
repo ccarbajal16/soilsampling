@@ -23,15 +23,17 @@ This method is particularly effective when:
 
 ### The Maximum Volume Principle
 
-Given a matrix $\mathbf{A}$ of size $m \times n$ (where $m$ represents
-locations and $n$ represents features), the maxvol algorithm selects $k$
-rows that form a submatrix $\widehat{\mathbf{A}}$ with approximately
-maximum determinant:
+Given a matrix $`\mathbf{A}`$ of size $`m \times n`$ (where $`m`$
+represents locations and $`n`$ represents features), the maxvol
+algorithm selects $`k`$ rows that form a submatrix $`\hat{\mathbf{A}}`$
+with approximately maximum determinant:
 
-$$\widehat{\mathbf{A}} = \arg\max\limits_{\text{submatrix}}\left| \det\left( \mathbf{A}_{k} \right) \right|$$
+``` math
+\hat{\mathbf{A}} = \arg\max_{\text{submatrix}} |\det(\mathbf{A}_k)|
+```
 
 Geometrically, the determinant represents the volume of the
-$n$-dimensional parallelepiped spanned by the row vectors. Maximizing
+$`n`$-dimensional parallelepiped spanned by the row vectors. Maximizing
 this volume ensures that selected locations have maximal diversity in
 feature space.
 
@@ -47,7 +49,7 @@ estimates. In practical terms, D-optimal designs:
 
 ### Algorithm Steps
 
-1.  **Feature Matrix Construction**: Create matrix $\mathbf{A}$ where
+1.  **Feature Matrix Construction**: Create matrix $`\mathbf{A}`$ where
     each row represents a location and columns represent features
     (elevation, slope, TWI, etc.)
 
@@ -56,9 +58,9 @@ estimates. In practical terms, D-optimal designs:
 
 3.  **Rectangular Maxvol** (`rect_maxvol`):
 
-    - Initialize with $k$ random rows
+    - Initialize with $`k`$ random rows
     - Compute coefficient matrix
-      $\mathbf{B} = \mathbf{A} \cdot {\widehat{\mathbf{A}}}^{- 1}$
+      $`\mathbf{B} = \mathbf{A} \cdot \hat{\mathbf{A}}^{-1}`$
     - Iteratively swap rows to maximize volume
     - Apply distance constraints if specified
 
@@ -68,6 +70,7 @@ estimates. In practical terms, D-optimal designs:
 ## Basic Usage
 
 ``` r
+
 library(soilsampling)
 library(sf)
 
@@ -97,6 +100,7 @@ grid_sf$aspect <- (atan2(coords[,2] - 25, coords[,1] - 50) + pi) / (2 * pi) * 36
 ### Simple Maxvol Sampling
 
 ``` r
+
 # Select 20 sampling points using maxvol
 samples_maxvol <- ss_maxvol(
   grid_sf,
@@ -122,6 +126,7 @@ ss_plot_samples(samples_maxvol)
 To avoid spatial clustering, apply a minimum distance constraint:
 
 ``` r
+
 # Select points with minimum 10-unit spacing
 samples_constrained <- ss_maxvol(
   grid_sf,
@@ -145,6 +150,7 @@ features for soil sampling:
 ### Topographic Features
 
 ``` r
+
 # Terrain features commonly used in pedometrics
 features_topo <- c(
   "elevation",      # Height above reference
@@ -167,6 +173,7 @@ Including coordinates as features balances feature space and geographic
 space:
 
 ``` r
+
 # Without coordinates: purely feature-based
 samples_no_coords <- ss_maxvol(
   grid_sf,
@@ -196,6 +203,7 @@ plot(st_geometry(samples_with_coords$samples), add = TRUE, pch = 19, col = "blue
 ![](maxvol-sampling_files/figure-html/unnamed-chunk-5-1.png)
 
 ``` r
+
 par(mfrow = c(1, 1))
 ```
 
@@ -204,6 +212,7 @@ par(mfrow = c(1, 1))
 Normalization is important when features have different scales:
 
 ``` r
+
 # Check feature scales
 summary(grid_sf[, c("elevation", "slope", "twi")])
 #>    elevation          slope              twi            geometry  
@@ -242,6 +251,7 @@ The distance constraint prevents spatial clustering when features vary
 locally:
 
 ``` r
+
 # No distance constraint
 samples_no_dist <- ss_maxvol(
   grid_sf,
@@ -280,6 +290,7 @@ plot(st_geometry(samples_large_dist$samples), add = TRUE, pch = 19, col = "green
 ![](maxvol-sampling_files/figure-html/unnamed-chunk-7-1.png)
 
 ``` r
+
 par(mfrow = c(1, 1))
 ```
 
@@ -295,6 +306,7 @@ Guidelines for setting the distance constraint:
     diameter
 
 ``` r
+
 # Rule of thumb: min_dist = (study area extent) / (2 * sqrt(n_samples))
 bbox <- st_bbox(study_area)
 extent <- sqrt((bbox$xmax - bbox$xmin) * (bbox$ymax - bbox$ymin))
@@ -308,6 +320,7 @@ cat("Suggested min_dist:", round(suggested_min_dist, 1), "\n")
 ## Comparison with Other Methods
 
 ``` r
+
 set.seed(123)
 
 # Maxvol sampling
@@ -341,6 +354,7 @@ plot(st_geometry(samp_random$samples), add = TRUE, pch = 19, col = "green")
 
 ``` r
 
+
 par(mfrow = c(1, 1))
 ```
 
@@ -358,6 +372,7 @@ par(mfrow = c(1, 1))
 ### Step 1: Prepare Feature Data
 
 ``` r
+
 library(terra)  # For raster processing
 
 # Load DEM
@@ -383,6 +398,7 @@ feature_sf <- st_as_sf(feature_points)
 ### Step 2: Run Maxvol
 
 ``` r
+
 # Select sampling points
 samples <- ss_maxvol(
   feature_sf,
@@ -403,6 +419,7 @@ if (!samples$converged) {
 ### Step 3: Export Results
 
 ``` r
+
 # Get coordinates
 coords <- ss_to_data_frame(samples)
 
@@ -420,6 +437,7 @@ st_write(ss_to_sf(samples), "maxvol_points.gpkg")
 You can provide your own feature matrix:
 
 ``` r
+
 # Create custom feature matrix
 coords_mat <- st_coordinates(grid_sf)
 n_loc <- nrow(coords_mat)
@@ -448,6 +466,7 @@ samples_custom <- ss_maxvol(
 Maxvol can complement existing sampling schemes:
 
 ``` r
+
 # Use maxvol to densify an existing sample
 # Suppose we have prior samples
 prior_samples <- ss_random(study_area, n = 5)
@@ -461,16 +480,16 @@ prior_samples <- ss_random(study_area, n = 5)
 
 ### Algorithm Complexity
 
-- Time complexity:
-  $O\left( k \cdot m \cdot n^{2} \cdot \text{iterations} \right)$
-- Space complexity: $O(m \cdot n)$
+- Time complexity: $`O(k \cdot m \cdot n^2 \cdot \text{iterations})`$
+- Space complexity: $`O(m \cdot n)`$
 
-where: - $m$ = number of candidate locations - $n$ = number of
-features - $k$ = number of samples to select
+where: - $`m`$ = number of candidate locations - $`n`$ = number of
+features - $`k`$ = number of samples to select
 
 ### Computational Tips
 
 ``` r
+
 # For large datasets, reduce candidate locations
 # Option 1: Coarser grid
 grid_coarse <- st_make_grid(study_area, cellsize = c(5, 5), what = "centers")

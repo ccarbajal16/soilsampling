@@ -26,15 +26,18 @@ The spatial coverage method is based on:
 The k-means algorithm partitions the study area into compact spatial
 strata by minimizing:
 
-$$\text{MSSD} = \frac{1}{m}\sum\limits_{i = 1}^{m}\min\limits_{k}d^{2}\left( x_{i},c_{k} \right)$$
+``` math
+\text{MSSD} = \frac{1}{m}\sum_{i=1}^{m} \min_k d^2(x_i, c_k)
+```
 
-where $x_{i}$ are grid cell centers, $c_{k}$ are stratum centroids, and
-$d$ is Euclidean distance (or haversine distance for lat/lon
+where $`x_i`$ are grid cell centers, $`c_k`$ are stratum centroids, and
+$`d`$ is Euclidean distance (or haversine distance for lat/lon
 coordinates).
 
 ## Basic Usage
 
 ``` r
+
 library(soilsampling)
 library(sf)
 
@@ -51,6 +54,7 @@ set.seed(123)
 ### Direct Coverage Sampling
 
 ``` r
+
 # Create 25 coverage samples in one step
 samples <- ss_coverage(study_area, n_strata = 25, n_try = 5)
 
@@ -64,6 +68,7 @@ print(samples)
 ### Two-Step Approach
 
 ``` r
+
 # Step 1: Create stratification
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
@@ -95,6 +100,7 @@ The package implements two k-means variants:
 Creates compact strata that may have unequal sizes:
 
 ``` r
+
 # Standard spatial coverage
 samples_transfer <- ss_coverage(study_area, n_strata = 20, n_try = 5)
 
@@ -111,6 +117,7 @@ summary(areas)
 Creates strata of approximately equal size:
 
 ``` r
+
 # Equal-area coverage sampling
 samples_equal <- ss_coverage_equal_area(study_area, n_strata = 20, n_try = 5)
 
@@ -136,6 +143,7 @@ You can incorporate existing sampling locations as fixed stratum
 centers:
 
 ``` r
+
 # Suppose we have 2 existing sampling locations
 prior_pts <- st_as_sf(
   data.frame(x = c(25, 75), y = c(25, 25)),
@@ -174,6 +182,7 @@ The choice of `n_strata` depends on:
 - **Mapping resolution**: Finer maps need more samples
 
 ``` r
+
 # Compare different numbers of strata
 samples_10 <- ss_coverage(study_area, n_strata = 10, n_try = 5)
 samples_50 <- ss_coverage(study_area, n_strata = 50, n_try = 5)
@@ -189,6 +198,7 @@ plot(st_geometry(samples_50$samples), add = TRUE, pch = 19, col = "red")
 ![](spatial-coverage_files/figure-html/unnamed-chunk-7-1.png)
 
 ``` r
+
 par(mfrow = c(1, 1))
 ```
 
@@ -197,6 +207,7 @@ par(mfrow = c(1, 1))
 The `n_try` parameter controls how many random initializations to use:
 
 ``` r
+
 # Compare convergence with different n_try values
 set.seed(456)
 result_1 <- ss_stratify(study_area, n_strata = 25, n_try = 1)
@@ -218,6 +229,7 @@ Higher `n_try` generally produces better results but takes longer.
 Control discretization resolution with `n_cells` or `cell_size`:
 
 ``` r
+
 # Coarse grid (fast)
 strata_coarse <- ss_stratify(
   study_area,
@@ -246,6 +258,7 @@ For design-based inference, use stratified random sampling instead of
 centroid placement:
 
 ``` r
+
 # Create strata
 strata <- ss_stratify(study_area, n_strata = 25, n_try = 5)
 
@@ -268,6 +281,7 @@ means and totals - Better precision than simple random sampling
 For laboratory cost reduction, combine samples from multiple locations:
 
 ``` r
+
 # Create 3 composite samples from 20 equal-area strata
 samples_comp <- ss_composite(study_area, n_strata = 20, n_composites = 3)
 
@@ -282,6 +296,7 @@ ss_plot(samples_comp)
 The package handles lat/lon coordinates automatically:
 
 ``` r
+
 # Study area with geographic CRS
 study_area_geo <- st_transform(study_area, crs = 4326)
 
@@ -298,6 +313,7 @@ samples_geo <- ss_coverage(study_area_geo, n_strata = 25, n_try = 5)
 A typical workflow for a soil survey:
 
 ``` r
+
 # 1. Load study area
 study_area <- st_read("my_field.shp")
 
@@ -320,6 +336,7 @@ st_write(ss_to_sf(samples), "sampling_points.gpkg")
 ## Comparison with Other Methods
 
 ``` r
+
 set.seed(789)
 
 # Spatial coverage
@@ -348,6 +365,7 @@ plot(st_geometry(samp_random$samples), add = TRUE, pch = 19, col = "green")
 ![](spatial-coverage_files/figure-html/unnamed-chunk-14-1.png)
 
 ``` r
+
 
 par(mfrow = c(1, 1))
 ```

@@ -91,6 +91,7 @@ Walvoort et al. (2010). Two k-means algorithms are available:
 
 A typical workflow for spatial coverage sampling:
 
+
     library(soilsampling)
     library(sf)
 
