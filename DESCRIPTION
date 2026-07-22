@@ -28,6 +28,7 @@ Imports:
     clhs,
     dplyr,
     minpack.lm,
+    randomForest,
     ggplot2 (>= 3.3.0),
     stats,
     methods,
