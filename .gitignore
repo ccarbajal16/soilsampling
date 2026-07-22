@@ -36,6 +36,7 @@ Thumbs.db
 tests/testthat/_snaps/
 *.Rout
 *.Rout.fail
+Rplots.pdf
 
 # Coverage
 covr/
