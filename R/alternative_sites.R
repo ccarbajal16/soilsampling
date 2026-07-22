@@ -554,3 +554,128 @@ ss_alt_filter_buffer <- function(candidate_sites, target_sites, min_distance) {
 
   candidate_sites[min_dist_to_target >= min_distance, , drop = FALSE]
 }
+
+
+#' Rank and Select the Top Similar Alternative Sites
+#'
+#' Orders candidate sites by similarity score (highest first) and returns
+#' the top `n_select`, annotated with rank and target site information.
+#'
+#' @param similarity_scores Numeric vector of similarity scores, as
+#'   returned by [ss_alt_similarity()], one per row of `candidate_sites`.
+#' @param candidate_sites Data frame of candidate sites, as returned by
+#'   [ss_alt_candidates()] or [ss_alt_filter_buffer()].
+#' @param n_select Integer, number of top alternatives to select. If
+#'   fewer valid (non-`NA`, finite) scores are available, all of them are
+#'   returned with a warning.
+#' @param target_site_id Optional character, ID of the target site these
+#'   alternatives are for; stored in a `target_site_id` column.
+#'
+#' @return A data frame of the top `n_select` candidate sites, with added
+#'   `target_site_id`, `similarity_score`, `similarity_rank`, and
+#'   `selection_method` columns. Empty data frame if no valid scores.
+#'
+#' @examples
+#' candidates <- data.frame(site_id = paste0("c", 1:5), x = 1:5, y = 1:5)
+#' scores <- c(0.9, 0.4, 0.95, 0.2, 0.7)
+#' ss_alt_rank(scores, candidates, n_select = 2, target_site_id = "site_001")
+#'
+#' @seealso [ss_alt_similarity()], [ss_alt_sites()]
+#' @export
+ss_alt_rank <- function(similarity_scores, candidate_sites, n_select = 5, target_site_id = NULL) {
+  if (!is.numeric(similarity_scores) || length(similarity_scores) == 0) {
+    stop("'similarity_scores' must be a non-empty numeric vector", call. = FALSE)
+  }
+  if (!is.data.frame(candidate_sites) || nrow(candidate_sites) == 0) {
+    stop("'candidate_sites' must be a non-empty data.frame", call. = FALSE)
+  }
+  if (length(similarity_scores) != nrow(candidate_sites)) {
+    stop("Length of 'similarity_scores' must match the number of rows in 'candidate_sites'", call. = FALSE)
+  }
+  if (!is.numeric(n_select) || length(n_select) != 1 || n_select <= 0) {
+    stop("'n_select' must be a single positive integer", call. = FALSE)
+  }
+
+  valid_scores <- !is.na(similarity_scores) & !is.infinite(similarity_scores)
+  if (sum(valid_scores) == 0) {
+    warning("No valid similarity scores found", call. = FALSE)
+    return(candidate_sites[0, , drop = FALSE])
+  }
+
+  if (sum(valid_scores) < n_select) {
+    warning("Only ", sum(valid_scores), " valid similarity scores available, selecting all", call. = FALSE)
+    n_select <- sum(valid_scores)
+  }
+
+  candidates_with_scores <- candidate_sites
+  candidates_with_scores$similarity_score <- similarity_scores
+  candidates_with_scores$target_site_id <- target_site_id
+
+  candidates_valid <- candidates_with_scores[valid_scores, ]
+  candidates_ranked <- candidates_valid[order(candidates_valid$similarity_score, decreasing = TRUE), ]
+  selected_alternatives <- candidates_ranked[seq_len(n_select), ]
+
+  selected_alternatives$similarity_rank <- seq_len(n_select)
+  selected_alternatives$selection_method <- "similarity"
+
+  coord_cols <- intersect(c("site_id", "x", "y", "type"), names(selected_alternatives))
+  score_cols <- c("target_site_id", "similarity_score", "similarity_rank", "selection_method")
+  env_cols <- setdiff(names(selected_alternatives), c(coord_cols, score_cols))
+
+  selected_alternatives[, c(coord_cols, score_cols, env_cols)]
+}
+
+
+#' Standardize Site Coordinate Data
+#'
+#' Normalizes a data frame of site coordinates (typically loaded from
+#' CSV) to the `site_id`, `x`, `y`, `type` column layout used throughout
+#' the `ss_alt_*` functions.
+#'
+#' @param sites_data Data frame with at least x/y coordinate columns.
+#' @param x_col Character, name of the x coordinate column. Default `"x"`.
+#' @param y_col Character, name of the y coordinate column. Default `"y"`.
+#' @param id_col Optional character, name of an existing site ID column.
+#'   If `NULL` or not found, IDs are generated as `"<site_type>_<n>"`.
+#' @param site_type Character, value for the `type` column and the ID
+#'   prefix when `id_col` is not supplied. Default `"inaccessible"`.
+#'
+#' @return A data frame with `site_id`, `x`, `y`, `type` as the first
+#'   four columns, followed by any remaining columns from `sites_data`.
+#'
+#' @examples
+#' raw <- data.frame(lon = c(629500, 630200), lat = c(9879500, 9880100))
+#' ss_alt_standardize_sites(raw, x_col = "lon", y_col = "lat")
+#'
+#' @seealso [ss_alt_sites()]
+#' @export
+ss_alt_standardize_sites <- function(sites_data, x_col = "x", y_col = "y",
+                                      id_col = NULL, site_type = "inaccessible") {
+  if (!is.data.frame(sites_data) || nrow(sites_data) == 0) {
+    stop("'sites_data' must be a non-empty data.frame", call. = FALSE)
+  }
+  if (!x_col %in% names(sites_data)) {
+    stop("Column '", x_col, "' not found in 'sites_data'", call. = FALSE)
+  }
+  if (!y_col %in% names(sites_data)) {
+    stop("Column '", y_col, "' not found in 'sites_data'", call. = FALSE)
+  }
+
+  sites_data$x <- sites_data[[x_col]]
+  sites_data$y <- sites_data[[y_col]]
+  if (x_col != "x") sites_data[[x_col]] <- NULL
+  if (y_col != "y") sites_data[[y_col]] <- NULL
+
+  if (is.null(id_col) || !id_col %in% names(sites_data)) {
+    sites_data$site_id <- paste0(site_type, "_", seq_len(nrow(sites_data)))
+  } else {
+    sites_data$site_id <- sites_data[[id_col]]
+    if (id_col != "site_id") sites_data[[id_col]] <- NULL
+  }
+
+  sites_data$type <- site_type
+
+  coord_cols <- c("site_id", "x", "y", "type")
+  other_cols <- setdiff(names(sites_data), coord_cols)
+  sites_data[, c(coord_cols, other_cols), drop = FALSE]
+}
