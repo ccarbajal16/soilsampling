@@ -679,3 +679,199 @@ ss_alt_standardize_sites <- function(sites_data, x_col = "x", y_col = "y",
   other_cols <- setdiff(names(sites_data), coord_cols)
   sites_data[, c(coord_cols, other_cols), drop = FALSE]
 }
+
+
+#' Find Alternative Sampling Sites for Inaccessible Locations
+#'
+#' End-to-end workflow: generates a candidate pool ([ss_alt_candidates()]),
+#' optionally excludes candidates near the target sites
+#' ([ss_alt_filter_buffer()]), then computes environmental similarity
+#' ([ss_alt_similarity()]) and selects the top alternatives
+#' ([ss_alt_rank()]) for each target (e.g. inaccessible) site.
+#'
+#' @param covariates A character path to a `.tif` file or directory (see
+#'   [ss_load_rasters()]), or an already-loaded `SpatRaster` stack.
+#' @param target_sites Data frame of sites needing alternatives, with `x`
+#'   and `y` coordinate columns. A `site_id` column is generated if
+#'   missing. Environmental values are extracted automatically for any
+#'   covariate layer not already present as a column.
+#' @param method Similarity metric: `"mahalanobis"` (default),
+#'   `"euclidean"`, or `"gower"`. Passed to [ss_alt_similarity()].
+#' @param n_alternatives Integer, number of alternatives per target site.
+#'   Default `5`.
+#' @param n_candidates Integer, size of the candidate pool. If `NULL`
+#'   (default), set to `max(n_alternatives * 50, 1000)`.
+#' @param min_distance_buffer Numeric, minimum distance (raster
+#'   coordinate units) candidates must keep from every target site. If
+#'   `NULL` (default), no buffer is applied.
+#' @param categorical_vars Character vector of categorical covariate
+#'   names. Passed to [ss_alt_similarity()].
+#' @param weights Optional named numeric vector of variable weights.
+#'   Passed to [ss_alt_similarity()].
+#' @param normalize Logical, passed to [ss_alt_similarity()]. Default `TRUE`.
+#' @param missing_method Passed to [ss_alt_similarity()]. Default `"pairwise"`.
+#' @param candidate_method `"random"` (default) or `"systematic"`.
+#'   Passed to [ss_alt_candidates()].
+#' @param seed Optional integer seed for reproducibility.
+#' @param output_dir Character, directory to write CSV outputs to. If
+#'   `NULL` (default), nothing is written to disk.
+#'
+#' @return A list with:
+#'   \describe{
+#'     \item{target_sites}{Data frame, targets with environmental values.}
+#'     \item{candidate_sites}{Data frame, the (buffer-filtered) candidate pool.}
+#'     \item{alternatives}{Data frame, all selected alternatives for all
+#'       target sites, with a `target_site_id` column.}
+#'     \item{selected_by_site}{Named list of per-target alternative data
+#'       frames, keyed by `site_id`.}
+#'     \item{method_info}{List recording the parameters used.}
+#'     \item{file_paths}{Only when `output_dir` is supplied: named list
+#'       of files written.}
+#'   }
+#'
+#' @examples
+#' \dontrun{
+#' inaccessible <- read.csv("data/inaccessible_sites.csv")
+#' res <- ss_alt_sites("data/predictors.tif", inaccessible,
+#'   n_alternatives = 3, min_distance_buffer = 300, seed = 123
+#' )
+#' res$alternatives
+#' }
+#'
+#' @seealso [ss_alt_candidates()], [ss_alt_filter_buffer()],
+#'   [ss_alt_similarity()], [ss_alt_rank()]
+#' @export
+ss_alt_sites <- function(covariates,
+                          target_sites,
+                          method = c("mahalanobis", "euclidean", "gower"),
+                          n_alternatives = 5,
+                          n_candidates = NULL,
+                          min_distance_buffer = NULL,
+                          categorical_vars = NULL,
+                          weights = NULL,
+                          normalize = TRUE,
+                          missing_method = "pairwise",
+                          candidate_method = c("random", "systematic"),
+                          seed = NULL,
+                          output_dir = NULL) {
+  method <- match.arg(method)
+  candidate_method <- match.arg(candidate_method)
+
+  if (!is.data.frame(target_sites) || nrow(target_sites) == 0) {
+    stop("'target_sites' must be a non-empty data.frame", call. = FALSE)
+  }
+  if (!all(c("x", "y") %in% names(target_sites))) {
+    stop("'target_sites' must contain 'x' and 'y' coordinate columns", call. = FALSE)
+  }
+  if (!"site_id" %in% names(target_sites)) {
+    target_sites$site_id <- paste0("target_", seq_len(nrow(target_sites)))
+  }
+
+  rasters <- if (inherits(covariates, "SpatRaster")) covariates else ss_load_rasters(covariates)
+
+  if (is.null(n_candidates)) {
+    n_candidates <- max(n_alternatives * 50, 1000)
+  }
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+
+  candidate_sites <- ss_alt_candidates(rasters, n_candidates, method = candidate_method, seed = seed)
+
+  if (!is.null(min_distance_buffer)) {
+    n_before <- nrow(candidate_sites)
+    candidate_sites <- ss_alt_filter_buffer(candidate_sites, target_sites, min_distance_buffer)
+    if (nrow(candidate_sites) == 0) {
+      stop(
+        "All candidates were excluded by 'min_distance_buffer'. ",
+        "Try reducing it or increasing 'n_candidates'.",
+        call. = FALSE
+      )
+    }
+    if (nrow(candidate_sites) < 10) {
+      warning(
+        "Only ", nrow(candidate_sites), " candidates remain after distance filtering (",
+        n_before, " before). Consider reducing 'min_distance_buffer' or increasing 'n_candidates'.",
+        call. = FALSE
+      )
+    }
+  }
+
+  env_vars <- setdiff(names(candidate_sites), c("site_id", "x", "y", "type"))
+  if (length(env_vars) == 0) {
+    stop("No environmental variables found in 'candidate_sites'", call. = FALSE)
+  }
+
+  missing_env_vars <- setdiff(env_vars, names(target_sites))
+  if (length(missing_env_vars) > 0) {
+    target_env <- as.data.frame(terra::extract(rasters, target_sites[, c("x", "y")], ID = FALSE))
+    target_sites <- cbind(target_sites, target_env)
+  }
+
+  if (!is.null(categorical_vars)) {
+    categorical_vars <- intersect(categorical_vars, env_vars)
+  }
+
+  selected_by_site <- list()
+  for (i in seq_len(nrow(target_sites))) {
+    site_id <- target_sites$site_id[i]
+    target_values <- unlist(target_sites[i, env_vars])
+
+    scores <- ss_alt_similarity(
+      target_values, candidate_sites[env_vars],
+      categorical_vars = categorical_vars, weights = weights,
+      method = method, normalize = normalize, missing_method = missing_method
+    )
+
+    selected_by_site[[site_id]] <- ss_alt_rank(
+      scores, candidate_sites,
+      n_select = n_alternatives, target_site_id = site_id
+    )
+  }
+
+  alternatives <- do.call(rbind, c(selected_by_site, list(make.row.names = FALSE)))
+
+  out <- list(
+    target_sites = target_sites,
+    candidate_sites = candidate_sites,
+    alternatives = alternatives,
+    selected_by_site = selected_by_site,
+    method_info = list(
+      method = method,
+      n_alternatives = n_alternatives,
+      n_candidates = nrow(candidate_sites),
+      min_distance_buffer = min_distance_buffer,
+      candidate_method = candidate_method
+    )
+  )
+
+  if (!is.null(output_dir)) {
+    out$file_paths <- .write_alt_outputs(target_sites, alternatives, output_dir)
+  }
+
+  out
+}
+
+
+#' Write Alternative Site Selection Outputs to Disk
+#'
+#' @param target_sites Data frame of target sites with environmental values.
+#' @param alternatives Data frame of selected alternatives for all sites.
+#' @param output_dir Character, directory to write outputs to.
+#'
+#' @return A named list of file paths written.
+#'
+#' @keywords internal
+.write_alt_outputs <- function(target_sites, alternatives, output_dir) {
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+  }
+
+  sites_path <- file.path(output_dir, "similarity_analysis_sites.csv")
+  targets_path <- file.path(output_dir, "similarity_analysis_inaccessible_sites.csv")
+
+  utils::write.csv(alternatives, sites_path, row.names = FALSE)
+  utils::write.csv(target_sites, targets_path, row.names = FALSE)
+
+  list(alternatives = sites_path, target_sites = targets_path)
+}
