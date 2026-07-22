@@ -12,6 +12,9 @@ The **soilsampling** package provides methods for designing soil sampling scheme
 - **Maxvol Optimal Design Sampling**: Feature-based sampling using D-optimal experimental design
 - **Composite Sampling**: Sampling from equal-area strata for combined samples
 - **Validation Metrics**: Assess stratification quality through coverage efficiency and distance statistics
+- **KL Sample Size Optimization**: Determine optimal cLHS sample size via Kullback-Leibler divergence
+- **cLHS + Random Forest Optimization**: Refine a cLHS design with simulated annealing to minimize RF prediction error
+- **Alternative Site Selection**: Find environmentally similar replacement sites for inaccessible sampling locations
 
 
 ## Installation
@@ -41,6 +44,12 @@ devtools::install_local("path/to/soilsampling")
 - R (>= 4.1.0)
 - sf (>= 1.0-12)
 - ggplot2 (>= 3.3.0)
+- terra
+- clhs
+- dplyr
+- minpack.lm
+- randomForest
+- gridExtra
 
 ## Quick Start
 
@@ -178,6 +187,74 @@ The maxvol algorithm selects locations that maximize the determinant (volume) of
 - You need deterministic (non-random) point selection
 - You want optimal coverage with few samples
 
+## Sample Size Optimization (KL Divergence)
+
+Determine the cLHS sample size that best represents the population distribution, based on Kullback-Leibler divergence (Malone et al. 2019):
+
+```r
+library(terra)
+
+predictors <- rast("data/predictors.tif")
+
+result <- ss_kl_size(
+  predictors,
+  min_samples = 10,
+  max_samples = 200,
+  step_size = 10,
+  n_replicates = 10,
+  output_dir = "outputs"   # optional: writes CSVs and plots
+)
+
+result$optimal_sample_size
+result$plot_cdf
+```
+
+`ss_kl_size()` accepts a raster path, an already-loaded `SpatRaster`, or a population data frame directly. Use `ss_kl_optimize()` for the underlying optimization without raster I/O, or `ss_kl_divergence()` to compute divergence between an arbitrary population and sample.
+
+## cLHS + Random Forest Optimization
+
+Refine a cLHS baseline design using simulated annealing to minimize cross-validated Random Forest prediction error (Wadoux et al. 2019):
+
+```r
+predictors <- rast("data/predictors.tif")
+
+result <- ss_rf_size(
+  predictors,
+  n_samples = 100,
+  n_iterations = 500,
+  seed = 123,
+  output_dir = "outputs"   # optional: writes CSVs and comparison plot
+)
+
+result$comparison_table
+result$improvement   # % MSE reduction vs. the cLHS baseline
+```
+
+`ss_clhs_sample()` generates the cLHS baseline alone; `ss_rf_optimize()` runs the simulated-annealing refinement; `ss_rf_mse()` exposes the cross-validated MSE objective function directly.
+
+## Alternative Site Selection
+
+Find environmentally similar alternative sites when original sampling locations become inaccessible:
+
+```r
+predictors <- rast("data/predictors.tif")
+inaccessible <- read.csv("data/inaccessible_sites.csv")  # needs x, y columns
+
+result <- ss_alt_sites(
+  predictors,
+  inaccessible,
+  method = "mahalanobis",       # or "euclidean", "gower"
+  n_alternatives = 3,
+  min_distance_buffer = 300,    # exclude candidates within 300m of any target
+  seed = 123,
+  output_dir = "outputs"        # optional: writes CSVs
+)
+
+result$alternatives   # top alternatives for every inaccessible site
+```
+
+Lower-level building blocks are also exported: `ss_alt_candidates()` (candidate pool generation), `ss_alt_filter_buffer()` (distance exclusion), `ss_alt_similarity()` (similarity scoring), `ss_alt_rank()` (top-N selection), and `ss_alt_standardize_sites()` (normalize raw CSV coordinates to the package's site layout).
+
 ## Assessing Stratification Quality
 
 The package provides validation metrics to assess the quality of your stratification:
@@ -310,6 +387,36 @@ st_write(samples_sf, "sampling_points.gpkg")
 | `ss_area()` | Get stratum areas |
 | `ss_relative_area()` | Get relative stratum areas |
 
+### KL Sample Size Optimization
+
+| Function | Description |
+|----------|-------------|
+| `ss_load_rasters()` | Load a multi-layer raster or a directory of single-layer rasters |
+| `ss_kl_divergence()` | KL divergence between population and sample distributions |
+| `ss_kl_optimize()` | Optimize cLHS sample size via KL divergence |
+| `ss_kl_size()` | End-to-end workflow from raster/data frame to optimal sample size |
+| `ss_kl_save_plots()` | Save KL divergence and CDF plots independently |
+
+### cLHS + Random Forest Optimization
+
+| Function | Description |
+|----------|-------------|
+| `ss_clhs_sample()` | Conditioned Latin hypercube baseline sampling |
+| `ss_rf_mse()` | Cross-validated Random Forest MSE objective function |
+| `ss_rf_optimize()` | Simulated annealing refinement to minimize RF MSE |
+| `ss_rf_size()` | End-to-end workflow with comparison plots |
+
+### Alternative Site Selection
+
+| Function | Description |
+|----------|-------------|
+| `ss_alt_similarity()` | Environmental similarity (Mahalanobis, Euclidean, or Gower distance) |
+| `ss_alt_candidates()` | Generate a candidate site pool (random or systematic grid) |
+| `ss_alt_filter_buffer()` | Exclude candidates within a minimum distance of target sites |
+| `ss_alt_rank()` | Rank and select the top similar alternatives |
+| `ss_alt_standardize_sites()` | Standardize site coordinate data to the package's layout |
+| `ss_alt_sites()` | End-to-end alternative site selection workflow |
+
 ## When to Use Each Method
 
 | Method | Best For | Inference Type |
@@ -319,6 +426,9 @@ st_write(samples_sf, "sampling_points.gpkg")
 | `ss_stratified()` | Estimating means/totals | Design-based |
 | `ss_random()` | Simple design-based analysis | Design-based |
 | `ss_composite()` | Reducing laboratory costs | Design-based |
+| `ss_kl_size()` | Choosing how many cLHS samples to collect | Model-based |
+| `ss_rf_size()` | Maximizing predictive accuracy of a fixed-size design | Model-based |
+| `ss_alt_sites()` | Replacing inaccessible sites with similar alternatives | Model-based |
 
 ## Algorithm Details
 
@@ -352,6 +462,14 @@ Both algorithms minimize the Mean Squared Shortest Distance (MSSD) between cells
 - Petrovskaia, N., Korveh, K., and Maas, E. (2021). Optimal soil sampling
   design based on the maxvol algorithm. *Geoderma* 381, 114733.
   DOI: [10.1016/j.geoderma.2020.114733](https://doi.org/10.1016/j.geoderma.2020.114733)
+
+- Malone, B.P., Minasny, B., and Brungard, C. (2019). Some methods to
+  improve the utility of conditioned Latin hypercube sampling. *PeerJ* 7, e6451.
+  DOI: [10.7717/peerj.6451](https://doi.org/10.7717/peerj.6451)
+
+- Wadoux, A.M.J-C., Brus, D.J., and Heuvelink, G.B.M. (2019). Sampling
+  design optimization for soil mapping with random forest. *Geoderma* 355, 113913.
+  DOI: [10.1016/j.geoderma.2019.113913](https://doi.org/10.1016/j.geoderma.2019.113913)
 
 ## License
 
