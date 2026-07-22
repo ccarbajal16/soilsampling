@@ -84,6 +84,12 @@
 <strong>Composite Sampling</strong>: Sampling from equal-area strata for combined samples</li>
 <li>
 <strong>Validation Metrics</strong>: Assess stratification quality through coverage efficiency and distance statistics</li>
+<li>
+<strong>KL Sample Size Optimization</strong>: Determine optimal cLHS sample size via Kullback-Leibler divergence</li>
+<li>
+<strong>cLHS + Random Forest Optimization</strong>: Refine a cLHS design with simulated annealing to minimize RF prediction error</li>
+<li>
+<strong>Alternative Site Selection</strong>: Find environmentally similar replacement sites for inaccessible sampling locations</li>
 </ul>
 </div>
 <div class="section level2">
@@ -116,6 +122,12 @@
 <li>R (&gt;= 4.1.0)</li>
 <li>sf (&gt;= 1.0-12)</li>
 <li>ggplot2 (&gt;= 3.3.0)</li>
+<li>terra</li>
+<li>clhs</li>
+<li>dplyr</li>
+<li>minpack.lm</li>
+<li>randomForest</li>
+<li>gridExtra</li>
 </ul>
 </div>
 </div>
@@ -248,6 +260,68 @@
 </div>
 </div>
 <div class="section level2">
+<h2 id="sample-size-optimization-kl-divergence">Sample Size Optimization (KL Divergence)<a class="anchor" aria-label="anchor" href="#sample-size-optimization-kl-divergence"></a>
+</h2>
+<p>Determine the cLHS sample size that best represents the population distribution, based on Kullback-Leibler divergence (Malone et al. 2019):</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">predictors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"data/predictors.tif"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ss_kl_size.html">ss_kl_size</a></span><span class="op">(</span></span>
+<span>  <span class="va">predictors</span>,</span>
+<span>  min_samples <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  max_samples <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  step_size <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  n_replicates <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  output_dir <span class="op">=</span> <span class="st">"outputs"</span>   <span class="co"># optional: writes CSVs and plots</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">optimal_sample_size</span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">plot_cdf</span></span></code></pre></div>
+<p><code><a href="reference/ss_kl_size.html">ss_kl_size()</a></code> accepts a raster path, an already-loaded <code>SpatRaster</code>, or a population data frame directly. Use <code><a href="reference/ss_kl_optimize.html">ss_kl_optimize()</a></code> for the underlying optimization without raster I/O, or <code><a href="reference/ss_kl_divergence.html">ss_kl_divergence()</a></code> to compute divergence between an arbitrary population and sample.</p>
+</div>
+<div class="section level2">
+<h2 id="clhs--random-forest-optimization">cLHS + Random Forest Optimization<a class="anchor" aria-label="anchor" href="#clhs--random-forest-optimization"></a>
+</h2>
+<p>Refine a cLHS baseline design using simulated annealing to minimize cross-validated Random Forest prediction error (Wadoux et al. 2019):</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">predictors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"data/predictors.tif"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ss_rf_size.html">ss_rf_size</a></span><span class="op">(</span></span>
+<span>  <span class="va">predictors</span>,</span>
+<span>  n_samples <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  n_iterations <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
+<span>  output_dir <span class="op">=</span> <span class="st">"outputs"</span>   <span class="co"># optional: writes CSVs and comparison plot</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">comparison_table</span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">improvement</span>   <span class="co"># % MSE reduction vs. the cLHS baseline</span></span></code></pre></div>
+<p><code><a href="reference/ss_clhs_sample.html">ss_clhs_sample()</a></code> generates the cLHS baseline alone; <code><a href="reference/ss_rf_optimize.html">ss_rf_optimize()</a></code> runs the simulated-annealing refinement; <code><a href="reference/ss_rf_mse.html">ss_rf_mse()</a></code> exposes the cross-validated MSE objective function directly.</p>
+</div>
+<div class="section level2">
+<h2 id="alternative-site-selection">Alternative Site Selection<a class="anchor" aria-label="anchor" href="#alternative-site-selection"></a>
+</h2>
+<p>Find environmentally similar alternative sites when original sampling locations become inaccessible:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">predictors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"data/predictors.tif"</span><span class="op">)</span></span>
+<span><span class="va">inaccessible</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"data/inaccessible_sites.csv"</span><span class="op">)</span>  <span class="co"># needs x, y columns</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ss_alt_sites.html">ss_alt_sites</a></span><span class="op">(</span></span>
+<span>  <span class="va">predictors</span>,</span>
+<span>  <span class="va">inaccessible</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"mahalanobis"</span>,       <span class="co"># or "euclidean", "gower"</span></span>
+<span>  n_alternatives <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  min_distance_buffer <span class="op">=</span> <span class="fl">300</span>,    <span class="co"># exclude candidates within 300m of any target</span></span>
+<span>  seed <span class="op">=</span> <span class="fl">123</span>,</span>
+<span>  output_dir <span class="op">=</span> <span class="st">"outputs"</span>        <span class="co"># optional: writes CSVs</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span><span class="op">$</span><span class="va">alternatives</span>   <span class="co"># top alternatives for every inaccessible site</span></span></code></pre></div>
+<p>Lower-level building blocks are also exported: <code><a href="reference/ss_alt_candidates.html">ss_alt_candidates()</a></code> (candidate pool generation), <code><a href="reference/ss_alt_filter_buffer.html">ss_alt_filter_buffer()</a></code> (distance exclusion), <code><a href="reference/ss_alt_similarity.html">ss_alt_similarity()</a></code> (similarity scoring), <code><a href="reference/ss_alt_rank.html">ss_alt_rank()</a></code> (top-N selection), and <code><a href="reference/ss_alt_standardize_sites.html">ss_alt_standardize_sites()</a></code> (normalize raw CSV coordinates to the package’s site layout).</p>
+</div>
+<div class="section level2">
 <h2 id="assessing-stratification-quality">Assessing Stratification Quality<a class="anchor" aria-label="anchor" href="#assessing-stratification-quality"></a>
 </h2>
 <p>The package provides validation metrics to assess the quality of your stratification:</p>
@@ -255,7 +329,7 @@
 <h3 id="coverage-efficiency">Coverage Efficiency<a class="anchor" aria-label="anchor" href="#coverage-efficiency"></a>
 </h3>
 <p>Evaluate how uniformly cells are distributed across strata:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create stratification</span></span>
 <span><span class="va">strata</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">25</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
@@ -264,7 +338,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">efficiency</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Output metrics:</strong> - <strong>CV (Coefficient of Variation)</strong>: Lower values indicate more uniform distribution - <strong>Min/Max Ratio</strong>: Ratio of smallest to largest stratum (1.0 = perfect equality) - <strong>Gini Coefficient</strong>: Standard inequality measure (0 = perfect equality) - <strong>Efficiency Score</strong>: Qualitative assessment (Excellent/Good/Fair/Poor)</p>
 <p><strong>Comparing stratification methods:</strong></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Regular stratification</span></span>
 <span><span class="va">strata_regular</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ss_stratify.html">ss_stratify</a></span><span class="op">(</span><span class="va">study_area</span>, n_strata <span class="op">=</span> <span class="fl">20</span>, n_try <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
@@ -284,7 +358,7 @@
 <h3 id="distance-statistics">Distance Statistics<a class="anchor" aria-label="anchor" href="#distance-statistics"></a>
 </h3>
 <p>Compute distance from cells or samples to stratum centroids:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For stratification</span></span>
 <span><span class="va">dist_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ss_distance_summary.html">ss_distance_summary</a></span><span class="op">(</span><span class="va">strata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dist_summary</span><span class="op">)</span></span>
@@ -300,7 +374,7 @@
 <div class="section level2">
 <h2 id="working-with-shapefiles">Working with Shapefiles<a class="anchor" aria-label="anchor" href="#working-with-shapefiles"></a>
 </h2>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Read study area</span></span>
 <span><span class="va">study_area</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="st">"path/to/study_area.shp"</span><span class="op">)</span></span>
 <span></span>
@@ -461,11 +535,124 @@
 </tbody>
 </table>
 </div>
+<div class="section level3">
+<h3 id="kl-sample-size-optimization">KL Sample Size Optimization<a class="anchor" aria-label="anchor" href="#kl-sample-size-optimization"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="43%">
+<col width="56%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/ss_load_rasters.html">ss_load_rasters()</a></code></td>
+<td>Load a multi-layer raster or a directory of single-layer rasters</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_kl_divergence.html">ss_kl_divergence()</a></code></td>
+<td>KL divergence between population and sample distributions</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_kl_optimize.html">ss_kl_optimize()</a></code></td>
+<td>Optimize cLHS sample size via KL divergence</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_kl_size.html">ss_kl_size()</a></code></td>
+<td>End-to-end workflow from raster/data frame to optimal sample size</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_kl_save_plots.html">ss_kl_save_plots()</a></code></td>
+<td>Save KL divergence and CDF plots independently</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="clhs--random-forest-optimization-1">cLHS + Random Forest Optimization<a class="anchor" aria-label="anchor" href="#clhs--random-forest-optimization-1"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="43%">
+<col width="56%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/ss_clhs_sample.html">ss_clhs_sample()</a></code></td>
+<td>Conditioned Latin hypercube baseline sampling</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_rf_mse.html">ss_rf_mse()</a></code></td>
+<td>Cross-validated Random Forest MSE objective function</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_rf_optimize.html">ss_rf_optimize()</a></code></td>
+<td>Simulated annealing refinement to minimize RF MSE</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_rf_size.html">ss_rf_size()</a></code></td>
+<td>End-to-end workflow with comparison plots</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="alternative-site-selection-1">Alternative Site Selection<a class="anchor" aria-label="anchor" href="#alternative-site-selection-1"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="43%">
+<col width="56%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/ss_alt_similarity.html">ss_alt_similarity()</a></code></td>
+<td>Environmental similarity (Mahalanobis, Euclidean, or Gower distance)</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_alt_candidates.html">ss_alt_candidates()</a></code></td>
+<td>Generate a candidate site pool (random or systematic grid)</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_alt_filter_buffer.html">ss_alt_filter_buffer()</a></code></td>
+<td>Exclude candidates within a minimum distance of target sites</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_alt_rank.html">ss_alt_rank()</a></code></td>
+<td>Rank and select the top similar alternatives</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_alt_standardize_sites.html">ss_alt_standardize_sites()</a></code></td>
+<td>Standardize site coordinate data to the package’s layout</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_alt_sites.html">ss_alt_sites()</a></code></td>
+<td>End-to-end alternative site selection workflow</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
 <h2 id="when-to-use-each-method">When to Use Each Method<a class="anchor" aria-label="anchor" href="#when-to-use-each-method"></a>
 </h2>
 <table class="table">
+<colgroup>
+<col width="23%">
+<col width="29%">
+<col width="47%">
+</colgroup>
 <thead><tr>
 <th>Method</th>
 <th>Best For</th>
@@ -496,6 +683,21 @@
 <td><code><a href="reference/ss_composite.html">ss_composite()</a></code></td>
 <td>Reducing laboratory costs</td>
 <td>Design-based</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_kl_size.html">ss_kl_size()</a></code></td>
+<td>Choosing how many cLHS samples to collect</td>
+<td>Model-based</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_rf_size.html">ss_rf_size()</a></code></td>
+<td>Maximizing predictive accuracy of a fixed-size design</td>
+<td>Model-based</td>
+</tr>
+<tr>
+<td><code><a href="reference/ss_alt_sites.html">ss_alt_sites()</a></code></td>
+<td>Replacing inaccessible sites with similar alternatives</td>
+<td>Model-based</td>
 </tr>
 </tbody>
 </table>
@@ -535,6 +737,8 @@
 <li><p>de Gruijter, J.J., Brus, D.J., Bierkens, M.F.P., and Knotters, M. (2006). <em>Sampling for Natural Resource Monitoring</em>. Springer, Berlin.</p></li>
 <li><p>Walvoort, D.J.J., Brus, D.J., and de Gruijter, J.J. (2010). An R package for spatial coverage sampling and random sampling from compact geographical strata by k-means. <em>Computers &amp; Geosciences</em> 36, 1261-1267. DOI: <a href="https://doi.org/10.1016/j.cageo.2010.04.005" class="external-link">10.1016/j.cageo.2010.04.005</a></p></li>
 <li><p>Petrovskaia, N., Korveh, K., and Maas, E. (2021). Optimal soil sampling design based on the maxvol algorithm. <em>Geoderma</em> 381, 114733. DOI: <a href="https://doi.org/10.1016/j.geoderma.2020.114733" class="external-link">10.1016/j.geoderma.2020.114733</a></p></li>
+<li><p>Malone, B.P., Minasny, B., and Brungard, C. (2019). Some methods to improve the utility of conditioned Latin hypercube sampling. <em>PeerJ</em> 7, e6451. DOI: <a href="https://doi.org/10.7717/peerj.6451" class="external-link">10.7717/peerj.6451</a></p></li>
+<li><p>Wadoux, A.M.J-C., Brus, D.J., and Heuvelink, G.B.M. (2019). Sampling design optimization for soil mapping with random forest. <em>Geoderma</em> 355, 113913. DOI: <a href="https://doi.org/10.1016/j.geoderma.2019.113913" class="external-link">10.1016/j.geoderma.2019.113913</a></p></li>
 </ul>
 </div>
 <div class="section level2">
