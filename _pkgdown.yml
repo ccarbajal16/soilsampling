@@ -88,6 +88,33 @@ reference:
   - print.ss_strata
   - print.ss_coverage_efficiency
 
+- title: KL Sample Size Optimization
+  desc: Sample size optimization for cLHS based on KL divergence
+  contents:
+  - ss_load_rasters
+  - ss_kl_divergence
+  - ss_kl_optimize
+  - ss_kl_size
+  - ss_kl_save_plots
+
+- title: cLHS + Random Forest Optimization
+  desc: cLHS baseline sampling refined by Random Forest simulated annealing
+  contents:
+  - ss_clhs_sample
+  - ss_rf_mse
+  - ss_rf_optimize
+  - ss_rf_size
+
+- title: Alternative Site Selection
+  desc: Environmentally similar alternative sites for inaccessible locations
+  contents:
+  - ss_alt_similarity
+  - ss_alt_candidates
+  - ss_alt_filter_buffer
+  - ss_alt_rank
+  - ss_alt_standardize_sites
+  - ss_alt_sites
+
 figures:
   dev: ragg::agg_png
   dpi: 96
