@@ -24,6 +24,7 @@ Description: Provides methods for designing soil sampling schemes including
 Depends: R (>= 4.1.0)
 Imports:
     sf (>= 1.0-12),
+    terra,
     ggplot2 (>= 3.3.0),
     stats,
     methods
