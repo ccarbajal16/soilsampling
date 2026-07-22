@@ -30,7 +30,8 @@ Imports:
     minpack.lm,
     ggplot2 (>= 3.3.0),
     stats,
-    methods
+    methods,
+    utils
 Suggests:
     testthat (>= 3.0.0),
     knitr (>= 1.36),

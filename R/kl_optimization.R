@@ -368,3 +368,136 @@ ss_kl_optimize <- function(population_data,
       label = paste("Optimal size:", optimal_sample_size), color = "red"
     )
 }
+
+
+#' End-to-End cLHS Sample Size Optimization
+#'
+#' Runs [ss_kl_optimize()] starting from predictor rasters (a file path, a
+#' directory of `.tif` files, or an already-loaded `SpatRaster`) or directly
+#' from a population data frame. Optionally writes results and plots to
+#' disk.
+#'
+#' @param x One of: a character path to a `.tif` file or a directory of
+#'   `.tif` files, a `SpatRaster` stack, or a data frame of population
+#'   ancillary data (used as-is, skipping raster extraction).
+#' @param output_dir Character, directory to write CSV/PNG outputs to. If
+#'   `NULL` (default), nothing is written to disk.
+#' @param max_population Integer, if the population has more rows than this,
+#'   a random subsample of this size is used to keep runtime reasonable.
+#'   Default `100000`.
+#' @param min_samples,max_samples,step_size,n_replicates,n_bins,probability_threshold
+#'   Passed to [ss_kl_optimize()].
+#'
+#' @return The list returned by [ss_kl_optimize()], plus a `file_paths`
+#'   element (only when `output_dir` is supplied) listing the files written.
+#'
+#' @examples
+#' \dontrun{
+#' res <- ss_kl_size("data/predictors.tif", output_dir = "outputs")
+#' res$optimal_sample_size
+#' }
+#'
+#' @seealso [ss_kl_optimize()], [ss_load_rasters()]
+#' @export
+ss_kl_size <- function(x,
+                        output_dir = NULL,
+                        max_population = 100000,
+                        min_samples = 10,
+                        max_samples = 500,
+                        step_size = 10,
+                        n_replicates = 10,
+                        n_bins = 25,
+                        probability_threshold = 0.95) {
+  population_data <- if (is.data.frame(x)) {
+    x
+  } else {
+    rasters <- if (inherits(x, "SpatRaster")) x else ss_load_rasters(x)
+    population_values <- terra::values(rasters, na.rm = TRUE)
+    as.data.frame(population_values)
+  }
+
+  population_data <- population_data[stats::complete.cases(population_data), ]
+  if (nrow(population_data) == 0) {
+    stop("No complete cases found in population data", call. = FALSE)
+  }
+
+  if (nrow(population_data) > max_population) {
+    idx <- sample(nrow(population_data), max_population)
+    population_data <- population_data[idx, ]
+  }
+
+  results <- ss_kl_optimize(
+    population_data = population_data,
+    min_samples = min_samples,
+    max_samples = max_samples,
+    step_size = step_size,
+    n_replicates = n_replicates,
+    n_bins = n_bins,
+    probability_threshold = probability_threshold
+  )
+
+  if (!is.null(output_dir)) {
+    results$file_paths <- .write_kl_outputs(results, output_dir)
+  }
+
+  results
+}
+
+
+#' Write KL Optimization Results and Plots to Disk
+#'
+#' @param results List returned by [ss_kl_optimize()].
+#' @param output_dir Character, directory to write outputs to.
+#'
+#' @return A named list of file paths written (`NA` for any output that was
+#'   not available or failed to save).
+#'
+#' @keywords internal
+.write_kl_outputs <- function(results, output_dir) {
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+  }
+
+  raw_path <- file.path(output_dir, "kl_raw_results.csv")
+  summary_path <- file.path(output_dir, "kl_summary_results.csv")
+  utils::write.csv(results$raw_results, raw_path, row.names = FALSE)
+  utils::write.csv(results$summary_results, summary_path, row.names = FALSE)
+
+  curve_path <- NA
+  if (!is.null(results$fitted_curve)) {
+    curve_path <- file.path(output_dir, "kl_fitted_curve.csv")
+    utils::write.csv(results$fitted_curve, curve_path, row.names = FALSE)
+  }
+
+  kl_plot_path <- NA
+  if (!is.null(results$plot_kl)) {
+    kl_plot_path <- file.path(output_dir, "kl_divergence_vs_sample_size.png")
+    tryCatch(
+      ggplot2::ggsave(kl_plot_path, plot = results$plot_kl, width = 7, height = 5, dpi = 300),
+      error = function(e) {
+        warning("Could not save KL divergence plot: ", conditionMessage(e), call. = FALSE)
+        kl_plot_path <<- NA
+      }
+    )
+  }
+
+  cdf_plot_path <- NA
+  if (!is.null(results$plot_cdf)) {
+    cdf_plot_path <- file.path(output_dir, "kl_cdf_threshold.png")
+    tryCatch(
+      ggplot2::ggsave(cdf_plot_path, plot = results$plot_cdf, width = 7, height = 5, dpi = 300),
+      error = function(e) {
+        warning("Could not save CDF plot: ", conditionMessage(e), call. = FALSE)
+        cdf_plot_path <<- NA
+      }
+    )
+  }
+
+  list(
+    raw = raw_path,
+    summary = summary_path,
+    curve = curve_path,
+    kl_plot = kl_plot_path,
+    cdf_plot = cdf_plot_path
+  )
+}
