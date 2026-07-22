@@ -29,6 +29,12 @@ navbar:
         href: articles/spatial-coverage.html
       - text: Maxvol Optimal Design Sampling
         href: articles/maxvol-sampling.html
+      - text: KL Sample Size Optimization
+        href: articles/kl-sample-size.html
+      - text: cLHS + Random Forest Optimization
+        href: articles/clhs-rf-optimization.html
+      - text: Alternative Site Selection
+        href: articles/alternative-sites.html
       - text: User Guide
         href: articles/user-guide.html
     github:
