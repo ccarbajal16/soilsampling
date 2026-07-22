@@ -268,7 +268,7 @@ ss_kl_optimize <- function(population_data,
     if (!is.null(exp_model)) {
       fitted_curve <- data.frame(
         sample_size = sample_sizes,
-        fitted_kl = predict(exp_model, newdata = data.frame(sample_size = sample_sizes))
+        fitted_kl = stats::predict(exp_model, newdata = data.frame(sample_size = sample_sizes))
       )
 
       max_improvement <- max(fitted_curve$fitted_kl) - min(fitted_curve$fitted_kl)
