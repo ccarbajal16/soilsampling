@@ -501,3 +501,64 @@ ss_kl_size <- function(x,
     cdf_plot = cdf_plot_path
   )
 }
+
+
+#' Save KL Optimization Plots
+#'
+#' Saves the KL-divergence and CDF plots from a [ss_kl_optimize()] (or
+#' [ss_kl_size()]) result to disk, without writing the CSV outputs. Useful
+#' for re-saving plots on their own, e.g. with a different prefix.
+#'
+#' @param results List returned by [ss_kl_optimize()] or [ss_kl_size()].
+#' @param output_dir Character, directory to save plots to. Created if it
+#'   does not exist.
+#' @param prefix Character, file name prefix. Default `"kl"`.
+#'
+#' @return Character vector of file paths written (invisibly, if none were
+#'   saved, a zero-length character vector).
+#'
+#' @examples
+#' \dontrun{
+#' res <- ss_kl_optimize(population_data)
+#' ss_kl_save_plots(res, "outputs", prefix = "clhs")
+#' }
+#'
+#' @seealso [ss_kl_optimize()], [ss_kl_size()]
+#' @export
+ss_kl_save_plots <- function(results, output_dir = "outputs", prefix = "kl") {
+  if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+  }
+
+  saved_files <- character()
+
+  if (!is.null(results$plot_kl)) {
+    kl_path <- file.path(output_dir, paste0(prefix, "_divergence_plot.png"))
+    saved <- tryCatch({
+      ggplot2::ggsave(kl_path, plot = results$plot_kl, width = 8, height = 6, dpi = 300)
+      TRUE
+    }, error = function(e) {
+      warning("Could not save KL divergence plot: ", conditionMessage(e), call. = FALSE)
+      FALSE
+    })
+    if (saved) saved_files <- c(saved_files, kl_path)
+  }
+
+  if (!is.null(results$plot_cdf)) {
+    cdf_path <- file.path(output_dir, paste0(prefix, "_cdf_plot.png"))
+    saved <- tryCatch({
+      ggplot2::ggsave(cdf_path, plot = results$plot_cdf, width = 8, height = 6, dpi = 300)
+      TRUE
+    }, error = function(e) {
+      warning("Could not save CDF plot: ", conditionMessage(e), call. = FALSE)
+      FALSE
+    })
+    if (saved) saved_files <- c(saved_files, cdf_path)
+  }
+
+  if (length(saved_files) == 0) {
+    warning("No plots were saved: results$plot_kl and results$plot_cdf are both NULL", call. = FALSE)
+  }
+
+  invisible(saved_files)
+}
