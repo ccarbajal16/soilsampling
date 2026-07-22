@@ -396,3 +396,161 @@ ss_alt_similarity <- function(target_values,
 
   pmax(0, pmin(1, similarity_scores))
 }
+
+
+#' Generate Candidate Sites for Alternative Site Selection
+#'
+#' Generates a pool of candidate sites (random or on a systematic grid)
+#' within a raster's extent, restricted to valid (non-`NA`) cells, and
+#' extracts their environmental values.
+#'
+#' @param raster_data A `SpatRaster` stack of environmental covariates.
+#' @param n_candidates Integer, number of candidate sites to generate.
+#' @param method `"random"` (default) or `"systematic"` (regular grid).
+#' @param spacing Numeric, grid spacing for `method = "systematic"` (in
+#'   raster coordinate units). If `NULL` (default), calculated from the
+#'   raster extent to approximate `n_candidates`.
+#' @param seed Optional integer seed for reproducibility.
+#'
+#' @return A data frame with `site_id`, `x`, `y`, `type` (`"candidate"`),
+#'   and one column per raster layer.
+#'
+#' @examples
+#' \dontrun{
+#' r <- terra::rast("data/predictors.tif")
+#' candidates <- ss_alt_candidates(r, n_candidates = 1000, seed = 123)
+#' }
+#'
+#' @seealso [ss_alt_similarity()], [ss_alt_filter_buffer()], [ss_alt_sites()]
+#' @export
+ss_alt_candidates <- function(raster_data, n_candidates,
+                               method = c("random", "systematic"),
+                               spacing = NULL, seed = NULL) {
+  method <- match.arg(method)
+
+  if (!inherits(raster_data, "SpatRaster")) {
+    stop("'raster_data' must be a SpatRaster object", call. = FALSE)
+  }
+
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+
+  ext <- terra::ext(raster_data)
+  first_layer <- if (terra::nlyr(raster_data) > 1) raster_data[[1]] else raster_data
+
+  if (method == "random") {
+    max_attempts <- n_candidates * 10
+    generated_sites <- data.frame(x = numeric(0), y = numeric(0))
+    attempts <- 0
+
+    while (nrow(generated_sites) < n_candidates && attempts < max_attempts) {
+      batch_size <- min(n_candidates * 2, max_attempts - attempts)
+      batch_coords <- data.frame(
+        x = stats::runif(batch_size, min = ext[1], max = ext[2]),
+        y = stats::runif(batch_size, min = ext[3], max = ext[4])
+      )
+
+      valid_batch <- .alt_filter_valid_coords(first_layer, batch_coords)
+      if (nrow(valid_batch) > 0) {
+        valid_batch$x <- round(valid_batch$x, 8)
+        valid_batch$y <- round(valid_batch$y, 8)
+        combined <- rbind(generated_sites, valid_batch)
+        combined <- combined[!duplicated(combined), ]
+        if (nrow(combined) > n_candidates) {
+          combined <- combined[seq_len(n_candidates), ]
+        }
+        generated_sites <- combined
+      }
+
+      attempts <- attempts + batch_size
+    }
+  } else {
+    if (is.null(spacing)) {
+      area <- (ext[2] - ext[1]) * (ext[4] - ext[3])
+      spacing <- sqrt(area / n_candidates)
+    }
+
+    grid_coords <- expand.grid(
+      x = seq(ext[1] + spacing / 2, ext[2] - spacing / 2, by = spacing),
+      y = seq(ext[3] + spacing / 2, ext[4] - spacing / 2, by = spacing)
+    )
+
+    generated_sites <- .alt_filter_valid_coords(first_layer, grid_coords)
+
+    if (nrow(generated_sites) > n_candidates) {
+      generated_sites <- generated_sites[sample(nrow(generated_sites), n_candidates), ]
+    }
+  }
+
+  if (nrow(generated_sites) == 0) {
+    stop("Could not generate any valid candidate sites", call. = FALSE)
+  }
+
+  generated_sites$site_id <- paste0("candidate_", seq_len(nrow(generated_sites)))
+
+  extracted_values <- as.data.frame(terra::extract(raster_data, generated_sites[, c("x", "y")], ID = FALSE))
+
+  candidate_sites <- cbind(generated_sites[, c("site_id", "x", "y")], extracted_values)
+  candidate_sites$type <- "candidate"
+
+  coord_cols <- c("site_id", "x", "y", "type")
+  env_cols <- setdiff(names(candidate_sites), coord_cols)
+  candidate_sites[, c(coord_cols, env_cols)]
+}
+
+
+#' Filter Candidate Coordinates to Valid (Non-NA) Raster Cells
+#'
+#' @param layer A single-layer `SpatRaster`.
+#' @param coords Data frame with `x`, `y` columns.
+#'
+#' @return The subset of `coords` falling on non-`NA` cells of `layer`.
+#'
+#' @keywords internal
+.alt_filter_valid_coords <- function(layer, coords) {
+  test_values <- terra::extract(layer, coords[, c("x", "y")], ID = FALSE)
+  valid_mask <- !is.na(test_values[[1]])
+  coords[valid_mask, , drop = FALSE]
+}
+
+
+#' Exclude Candidate Sites Within a Distance Buffer of Target Sites
+#'
+#' Removes candidate sites that fall within `min_distance` of any target
+#' (e.g. inaccessible) site, ensuring spatial separation between original
+#' and alternative sampling locations.
+#'
+#' @param candidate_sites Data frame with `x`, `y` candidate coordinates.
+#' @param target_sites Data frame with `x`, `y` target coordinates.
+#' @param min_distance Numeric, minimum allowed distance (in raster
+#'   coordinate units) between a candidate and every target site.
+#'
+#' @return The subset of `candidate_sites` at least `min_distance` from
+#'   every row of `target_sites`.
+#'
+#' @examples
+#' candidates <- data.frame(x = c(0, 100, 500), y = c(0, 100, 500))
+#' targets <- data.frame(x = 0, y = 0)
+#' ss_alt_filter_buffer(candidates, targets, min_distance = 200)
+#'
+#' @seealso [ss_alt_candidates()], [ss_alt_sites()]
+#' @export
+ss_alt_filter_buffer <- function(candidate_sites, target_sites, min_distance) {
+  if (!all(c("x", "y") %in% names(candidate_sites))) {
+    stop("'candidate_sites' must contain 'x' and 'y' columns", call. = FALSE)
+  }
+  if (!all(c("x", "y") %in% names(target_sites))) {
+    stop("'target_sites' must contain 'x' and 'y' columns", call. = FALSE)
+  }
+  if (!is.numeric(min_distance) || length(min_distance) != 1 || min_distance <= 0) {
+    stop("'min_distance' must be a single positive number", call. = FALSE)
+  }
+
+  dx <- outer(candidate_sites$x, target_sites$x, "-")
+  dy <- outer(candidate_sites$y, target_sites$y, "-")
+  dist_matrix <- sqrt(dx^2 + dy^2)
+  min_dist_to_target <- apply(dist_matrix, 1, min)
+
+  candidate_sites[min_dist_to_target >= min_distance, , drop = FALSE]
+}
