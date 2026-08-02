@@ -23,7 +23,8 @@ fewer valid (non-\code{NA}, finite) scores are available, all of them are
 returned with a warning.}
 
 \item{target_site_id}{Optional character, ID of the target site these
-alternatives are for; stored in a \code{target_site_id} column.}
+alternatives are for; stored in a \code{target_site_id} column. If \code{NULL}
+(default), that column is filled with \code{NA}.}
 }
 \value{
 A data frame of the top \code{n_select} candidate sites, with added

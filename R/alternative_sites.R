@@ -569,7 +569,8 @@ ss_alt_filter_buffer <- function(candidate_sites, target_sites, min_distance) {
 #'   fewer valid (non-`NA`, finite) scores are available, all of them are
 #'   returned with a warning.
 #' @param target_site_id Optional character, ID of the target site these
-#'   alternatives are for; stored in a `target_site_id` column.
+#'   alternatives are for; stored in a `target_site_id` column. If `NULL`
+#'   (default), that column is filled with `NA`.
 #'
 #' @return A data frame of the top `n_select` candidate sites, with added
 #'   `target_site_id`, `similarity_score`, `similarity_rank`, and
@@ -609,7 +610,13 @@ ss_alt_rank <- function(similarity_scores, candidate_sites, n_select = 5, target
 
   candidates_with_scores <- candidate_sites
   candidates_with_scores$similarity_score <- similarity_scores
-  candidates_with_scores$target_site_id <- target_site_id
+  # Assigning NULL to a data frame column drops it rather than creating one,
+  # so an absent target_site_id must become NA to keep the documented layout.
+  candidates_with_scores$target_site_id <- if (is.null(target_site_id)) {
+    NA_character_
+  } else {
+    target_site_id
+  }
 
   candidates_valid <- candidates_with_scores[valid_scores, ]
   candidates_ranked <- candidates_valid[order(candidates_valid$similarity_score, decreasing = TRUE), ]
