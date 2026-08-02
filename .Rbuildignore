@@ -11,3 +11,11 @@
 ^\.pre-commit-config\.yaml$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^examples$
+^outputs$
+^data$
+^\.atl$
+^vignettes/.*\.html$
+^vignettes/.*\.R$
+^vignettes/.*_files$
+^vignettes/\.build\.timestamp$

@@ -45,7 +45,6 @@ URL: https://ccarbajal16.github.io/soilsampling/,
     https://github.com/ccarbajal16/soilsampling
 BugReports: https://github.com/ccarbajal16/soilsampling/issues
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
