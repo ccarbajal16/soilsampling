@@ -18,3 +18,8 @@ print(x, ...)
 - ...:
 
   Additional arguments (ignored)
+
+## Value
+
+`x`, invisibly. Called for the side effect of printing a summary of the
+stratification to the console.

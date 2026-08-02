@@ -12,13 +12,13 @@ Source:
 
 Carbajal C (2026). *soilsampling: Soil Sampling Design Methods Including
 Spatial Coverage, Simple Random, Stratified Sampling and Maxvol Optimal
-Design Sampling*. R package version 0.2.0,
+Design Sampling*. R package version 0.2.1,
 <https://ccarbajal16.github.io/soilsampling/>.
 
     @Manual{,
       title = {soilsampling: Soil Sampling Design Methods Including Spatial Coverage, Simple Random, Stratified Sampling and Maxvol Optimal Design Sampling},
       author = {Carlos Carbajal},
       year = {2026},
-      note = {R package version 0.2.0},
+      note = {R package version 0.2.1},
       url = {https://ccarbajal16.github.io/soilsampling/},
     }

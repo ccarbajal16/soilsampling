@@ -18,3 +18,8 @@ print(x, ...)
 - ...:
 
   Additional arguments (ignored)
+
+## Value
+
+`x`, invisibly. Called for the side effect of printing the coverage
+efficiency metrics to the console.

@@ -62,7 +62,7 @@ the files written.
 
 ``` r
 if (FALSE) { # \dontrun{
-res <- ss_kl_size("data/predictors.tif", output_dir = "outputs")
+res <- ss_kl_size("predictors.tif", output_dir = file.path(tempdir(), "kl"))
 res$optimal_sample_size
 } # }
 ```

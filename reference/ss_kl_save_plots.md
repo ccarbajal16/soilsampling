@@ -10,7 +10,7 @@ plots on their own, e.g. with a different prefix.
 ## Usage
 
 ``` r
-ss_kl_save_plots(results, output_dir = "outputs", prefix = "kl")
+ss_kl_save_plots(results, output_dir, prefix = "kl")
 ```
 
 ## Arguments
@@ -25,6 +25,8 @@ ss_kl_save_plots(results, output_dir = "outputs", prefix = "kl")
 - output_dir:
 
   Character, directory to save plots to. Created if it does not exist.
+  Required: the caller must choose where files are written, so this
+  function never writes to a default location.
 
 - prefix:
 
@@ -45,6 +47,6 @@ zero-length character vector).
 ``` r
 if (FALSE) { # \dontrun{
 res <- ss_kl_optimize(population_data)
-ss_kl_save_plots(res, "outputs", prefix = "clhs")
+ss_kl_save_plots(res, file.path(tempdir(), "kl"), prefix = "clhs")
 } # }
 ```

@@ -18,3 +18,8 @@ summary(object, ...)
 - ...:
 
   Additional arguments (ignored)
+
+## Value
+
+`object`, invisibly. Called for the side effect of printing a detailed
+summary of the stratification to the console.

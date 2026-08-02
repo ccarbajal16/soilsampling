@@ -213,8 +213,11 @@ a different naming scheme), use
 
 ``` r
 
-ss_kl_save_plots(result, output_dir = "outputs", prefix = "clhs_kl")
+ss_kl_save_plots(result, output_dir = "my_outputs", prefix = "clhs_kl")
 ```
+
+`output_dir` has no default: the function writes files, so the caller
+always chooses where they land.
 
 ## Choosing Parameters
 
