@@ -38,6 +38,12 @@ tests/testthat/_snaps/
 *.Rout.fail
 Rplots.pdf
 
+# R CMD check output
+*.Rcheck/
+
+# Local agent tooling (skill registry), not part of the package
+.atl/
+
 # Coverage
 covr/
 *.gcov
