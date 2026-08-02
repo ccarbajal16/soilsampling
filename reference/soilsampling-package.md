@@ -158,3 +158,7 @@ Useful links:
 ## Author
 
 **Maintainer**: Carlos Carbajal <ccarbajal@educagis.com>
+
+Authors:
+
+- Carlos Carbajal <ccarbajal@educagis.com>
