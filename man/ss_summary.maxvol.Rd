@@ -11,6 +11,12 @@ ss_summary.maxvol(object, ...)
 
 \item{...}{Additional arguments (ignored)}
 }
+\value{
+\code{object}, invisibly. Called for the side effect of printing a
+maxvol design summary to the console. If \code{object} was not produced by
+\code{\link[=ss_maxvol]{ss_maxvol()}}, dispatch is passed on with \code{NextMethod()} and that
+method's value is returned instead.
+}
 \description{
 Summary Method for Maxvol Sampling Results
 }
