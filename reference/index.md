@@ -6,7 +6,7 @@ Overview of the soilsampling package
 
 - [`soilsampling-package`](https://ccarbajal16.github.io/soilsampling/reference/soilsampling-package.md)
   [`soilsampling`](https://ccarbajal16.github.io/soilsampling/reference/soilsampling-package.md)
-  : soilsampling: Soil Sampling Design Methods
+  : soilsampling: Design and Optimization of Soil Sampling Schemes
 
 ## Sampling Methods
 

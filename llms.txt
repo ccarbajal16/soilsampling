@@ -1,7 +1,9 @@
 # soilsampling
 
-Soil Sampling Design Methods Including Spatial Coverage, Maxvol Optimal
-Design, Simple Random, and Stratified Sampling
+Design and optimization of soil sampling schemes: spatial coverage,
+maxvol optimal design, simple random and stratified sampling, plus
+sample size optimization, design refinement, and alternative site
+selection.
 
 ## Overview
 
@@ -552,7 +554,7 @@ Overview of the soilsampling package
 
 - [`soilsampling-package`](https://ccarbajal16.github.io/soilsampling/reference/soilsampling-package.md)
   [`soilsampling`](https://ccarbajal16.github.io/soilsampling/reference/soilsampling-package.md)
-  : soilsampling: Soil Sampling Design Methods
+  : soilsampling: Design and Optimization of Soil Sampling Schemes
 
 ## Sampling Methods
 

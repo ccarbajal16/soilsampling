@@ -10,13 +10,12 @@
 Source:
 [`DESCRIPTION`](https://github.com/ccarbajal16/soilsampling/blob/main/DESCRIPTION)
 
-Carbajal C (2026). *soilsampling: Soil Sampling Design Methods Including
-Spatial Coverage, Simple Random, Stratified Sampling and Maxvol Optimal
-Design Sampling*. R package version 0.2.1,
+Carbajal C (2026). *soilsampling: Design and Optimization of Soil
+Sampling Schemes*. R package version 0.2.1,
 <https://ccarbajal16.github.io/soilsampling/>.
 
     @Manual{,
-      title = {soilsampling: Soil Sampling Design Methods Including Spatial Coverage, Simple Random, Stratified Sampling and Maxvol Optimal Design Sampling},
+      title = {soilsampling: Design and Optimization of Soil Sampling Schemes},
       author = {Carlos Carbajal},
       year = {2026},
       note = {R package version 0.2.1},
