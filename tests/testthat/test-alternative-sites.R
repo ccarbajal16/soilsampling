@@ -161,6 +161,22 @@ test_that("ss_alt_rank orders alternatives by descending similarity", {
 })
 
 
+test_that("ss_alt_rank works without an explicit target_site_id", {
+  # Regression: assigning NULL to a data frame column drops it instead of
+  # creating one, so the default target_site_id = NULL used to make the final
+  # column selection fail with 'undefined columns selected'.
+  candidates <- data.frame(site_id = paste0("c", 1:4), x = 1:4, y = 1:4)
+  scores <- c(0.8, 0.3, 0.6, 0.1)
+
+  ranked <- ss_alt_rank(scores, candidates, n_select = 2)
+
+  expect_equal(nrow(ranked), 2)
+  expect_true("target_site_id" %in% names(ranked))
+  expect_true(all(is.na(ranked$target_site_id)))
+  expect_equal(ranked$site_id, c("c1", "c3"))
+})
+
+
 test_that("ss_alt_rank drops NA and infinite scores", {
   candidates <- data.frame(site_id = paste0("c", 1:5), x = 1:5, y = 1:5)
   scores <- c(0.9, NA, Inf, 0.2, 0.7)
