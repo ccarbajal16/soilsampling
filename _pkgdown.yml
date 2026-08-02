@@ -10,10 +10,11 @@ template:
     code_font: {google: "JetBrains Mono"}
 
 home:
-  title: "soilsampling: Soil Sampling Design Methods"
+  title: "soilsampling: Design and Optimization of Soil Sampling Schemes"
   description: >
-    Design soil sampling schemes using spatial coverage, maxvol optimal design,
-    simple random, and stratified sampling methods.
+    Design and optimize soil sampling schemes using spatial coverage, maxvol
+    optimal design, simple random and stratified sampling, plus sample size
+    optimization, design refinement, and alternative site selection.
 
 navbar:
   structure:

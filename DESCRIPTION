@@ -1,7 +1,6 @@
 Package: soilsampling
 Type: Package
-Title: Soil Sampling Design Methods Including Spatial Coverage, Simple Random,
-        Stratified Sampling and Maxvol Optimal Design Sampling
+Title: Design and Optimization of Soil Sampling Schemes
 Version: 0.2.1
 Authors@R: c(
         person(
@@ -9,17 +8,22 @@ Authors@R: c(
             family = "Carbajal",
             email = "ccarbajal@educagis.com",
             role = c("aut", "cre")))
-Description: Provides methods for designing soil sampling schemes including
-        spatial coverage sampling using k-means clustering, simple random
-        sampling, stratified random sampling, and maxvol optimal design sampling.
-        The maxvol method implements D-optimal experimental design based on maximum
-        volume criterion for feature-based sample selection. Includes validation
-        metrics to assess stratification quality through coverage efficiency
-        (uniformity of cell distribution) and distance statistics. The package uses
-        sf for spatial operations and does not require Java or the sp package.
-        Spatial coverage sampling is based on Walvoort et al. (2010)
-        <doi:10.1016/j.cageo.2010.04.005>. Maxvol sampling is based on Petrovskaia
-        et al. (2021) <doi:10.1016/j.geoderma.2020.114733>.
+Description: Provides methods for designing and optimizing soil sampling
+        schemes. Available designs include simple random sampling, stratified
+        random sampling, spatial coverage sampling from compact geographical
+        strata built by k-means clustering, composite sampling, and maxvol
+        optimal design, which applies a D-optimal maximum volume criterion to
+        select samples in feature space. Optimization tools choose a
+        conditioned Latin hypercube sample size from Kullback-Leibler
+        divergence, refine an existing design by simulated annealing against a
+        random forest objective, and identify environmentally similar
+        replacements for inaccessible sites. Validation metrics assess
+        stratification quality through coverage efficiency and distance
+        statistics. Methods follow Walvoort, Brus and de Gruijter (2010)
+        <doi:10.1016/j.cageo.2010.04.005>, Petrovskaia, Korveh and Maas (2021)
+        <doi:10.1016/j.geoderma.2020.114733>, Malone, Minasny and Brungard
+        (2019) <doi:10.7717/peerj.6451>, and Wadoux, Brus and Heuvelink (2019)
+        <doi:10.1016/j.geoderma.2019.113913>.
 Depends: R (>= 4.1.0)
 Imports:
     sf (>= 1.0-12),

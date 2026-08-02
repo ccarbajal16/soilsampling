@@ -10,7 +10,7 @@
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://ccarbajal16.github.io/soilsampling/)
 <!-- badges: end -->
 
-Soil Sampling Design Methods Including Spatial Coverage, Maxvol Optimal Design, Simple Random, and Stratified Sampling
+Design and optimization of soil sampling schemes: spatial coverage, maxvol optimal design, simple random and stratified sampling, plus sample size optimization, design refinement, and alternative site selection.
 
 ## Overview
 

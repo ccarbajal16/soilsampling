@@ -1,10 +1,11 @@
-#' soilsampling: Soil Sampling Design Methods
+#' soilsampling: Design and Optimization of Soil Sampling Schemes
 #'
 #' @description
-#' The soilsampling package provides methods for designing soil sampling schemes
-#' including spatial coverage sampling, simple random sampling, stratified random
-#' sampling, and composite sampling. The package uses sf for spatial operations
-#' and does not require Java or the sp package.
+#' The soilsampling package provides methods for designing and optimizing soil
+#' sampling schemes: spatial coverage sampling, simple random sampling,
+#' stratified random sampling, composite sampling, maxvol optimal design, and
+#' tools for choosing a sample size, refining an existing design, and replacing
+#' inaccessible sites. Spatial operations use sf.
 #'
 #' @details
 #' The package implements three main sampling approaches:
