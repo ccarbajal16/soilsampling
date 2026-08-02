@@ -187,8 +187,10 @@ test_that("ss_alt_rank warns when fewer valid scores than requested are availabl
 test_that("ss_alt_rank warns and returns an empty frame when no score is valid", {
   candidates <- data.frame(site_id = paste0("c", 1:3), x = 1:3, y = 1:3)
 
+  # NA_real_, not bare NA: c(NA, NA, NA) is a logical vector and is correctly
+  # rejected by the numeric input check before the all-invalid branch is reached.
   expect_warning(
-    ranked <- ss_alt_rank(c(NA, NA, NA), candidates, n_select = 2),
+    ranked <- ss_alt_rank(rep(NA_real_, 3), candidates, n_select = 2),
     "No valid similarity scores found"
   )
   expect_equal(nrow(ranked), 0)
