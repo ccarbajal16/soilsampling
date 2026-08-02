@@ -484,6 +484,10 @@ ss_composite <- function(x, n_strata = NULL, n_composites,
 #'
 #' @param x An object of class `ss_samples`
 #' @param ... Additional arguments (ignored)
+#'
+#' @return `x`, invisibly. Called for the side effect of printing a
+#'   summary of the sampling design to the console.
+#'
 #' @export
 print.ss_samples <- function(x, ...) {
   method_names <- c(
@@ -523,6 +527,10 @@ print.ss_samples <- function(x, ...) {
 #'
 #' @param object An object of class `ss_samples`
 #' @param ... Additional arguments (ignored)
+#'
+#' @return `object`, invisibly. Called for the side effect of printing a
+#'   detailed summary of the sampling design to the console.
+#'
 #' @export
 summary.ss_samples <- function(object, ...) {
   method_names <- c(

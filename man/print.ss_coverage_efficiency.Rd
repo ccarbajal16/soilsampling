@@ -11,6 +11,10 @@
 
 \item{...}{Additional arguments (ignored)}
 }
+\value{
+\code{x}, invisibly. Called for the side effect of printing the
+coverage efficiency metrics to the console.
+}
 \description{
 Print Method for ss_coverage_efficiency Objects
 }

@@ -1,5 +1,36 @@
 # soilsampling News
 
+## Version 0.2.1 (development)
+
+### Breaking Changes
+
+* `ss_kl_save_plots()`: `output_dir` is now a required argument. It
+  previously defaulted to `"outputs"`, which created a directory in the
+  user's working directory on a bare call. A package must not choose a
+  write location on the caller's behalf. Pass the directory explicitly,
+  e.g. `ss_kl_save_plots(res, "my_outputs")`.
+
+### Bug Fixes
+
+* `ss_alt_rank()`: fixed an error when `target_site_id` was left at its
+  `NULL` default. Assigning `NULL` to a data frame column drops it rather
+  than creating one, so the `target_site_id` column was never added and
+  the final column selection failed with "undefined columns selected".
+  The column is now filled with `NA` when no ID is supplied.
+
+### Documentation
+
+* Added `\value` sections to the exported S3 methods (`print.ss_samples()`,
+  `summary.ss_samples()`, `print.ss_strata()`, `summary.ss_strata()`,
+  `print.ss_coverage_efficiency()`, `ss_summary.maxvol()`).
+
+### Infrastructure
+
+* Added an `R-CMD-check` workflow covering macOS, Windows and Ubuntu
+  (R-devel, release and oldrel-1), plus status badges in the README.
+* Added test coverage for the KL, cLHS + Random Forest and alternative
+  site modules, which previously had none.
+
 ## Version 0.2.0 (2026-07-21)
 
 ### New Features

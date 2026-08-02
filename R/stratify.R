@@ -254,6 +254,10 @@ ss_stratify <- function(x, n_strata, prior_points = NULL,
 #'
 #' @param x An object of class `ss_strata`
 #' @param ... Additional arguments (ignored)
+#'
+#' @return `x`, invisibly. Called for the side effect of printing a
+#'   summary of the stratification to the console.
+#'
 #' @export
 print.ss_strata <- function(x, ...) {
   cat("Soil Sampling Stratification\n")
@@ -286,6 +290,10 @@ print.ss_strata <- function(x, ...) {
 #'
 #' @param object An object of class `ss_strata`
 #' @param ... Additional arguments (ignored)
+#'
+#' @return `object`, invisibly. Called for the side effect of printing a
+#'   detailed summary of the stratification to the console.
+#'
 #' @export
 summary.ss_strata <- function(object, ...) {
   cat("Soil Sampling Stratification Summary\n")

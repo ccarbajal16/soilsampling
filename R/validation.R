@@ -154,6 +154,10 @@ ss_coverage_efficiency <- function(x, digits = 3) {
 #'
 #' @param x An object of class `ss_coverage_efficiency`
 #' @param ... Additional arguments (ignored)
+#'
+#' @return `x`, invisibly. Called for the side effect of printing the
+#'   coverage efficiency metrics to the console.
+#'
 #' @export
 print.ss_coverage_efficiency <- function(x, ...) {
   cat("Stratification Coverage Efficiency\n")

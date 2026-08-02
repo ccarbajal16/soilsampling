@@ -258,6 +258,12 @@ ss_maxvol <- function(x, n, features = NULL, coords = NULL,
 #'
 #' @param object An object of class `ss_samples` from `ss_maxvol()`
 #' @param ... Additional arguments (ignored)
+#'
+#' @return `object`, invisibly. Called for the side effect of printing a
+#'   maxvol design summary to the console. If `object` was not produced by
+#'   [ss_maxvol()], dispatch is passed on with `NextMethod()` and that
+#'   method's value is returned instead.
+#'
 #' @export
 ss_summary.maxvol <- function(object, ...) {
   if (object$method != "maxvol") {

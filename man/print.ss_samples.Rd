@@ -11,6 +11,10 @@
 
 \item{...}{Additional arguments (ignored)}
 }
+\value{
+\code{x}, invisibly. Called for the side effect of printing a
+summary of the sampling design to the console.
+}
 \description{
 Print Method for ss_samples Objects
 }

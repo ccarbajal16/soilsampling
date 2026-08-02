@@ -193,6 +193,17 @@ test_that("ss_kl_size writes outputs only when output_dir is supplied", {
 })
 
 
+test_that("ss_kl_save_plots requires an explicit output_dir", {
+  # The function writes files, so it must never pick a destination on the
+  # caller's behalf: CRAN policy forbids writing outside tempdir() by default.
+  results <- list(plot_kl = NULL, plot_cdf = NULL)
+
+  expect_error(ss_kl_save_plots(results), "'output_dir' must be a single directory path")
+  expect_error(ss_kl_save_plots(results, output_dir = NULL), "single directory path")
+  expect_error(ss_kl_save_plots(results, output_dir = c("a", "b")), "single directory path")
+})
+
+
 test_that("ss_kl_save_plots warns and saves nothing when there are no plots", {
   out_dir <- file.path(tempdir(), "kl-plots-empty")
   on.exit(unlink(out_dir, recursive = TRUE), add = TRUE)
