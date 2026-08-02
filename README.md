@@ -1,5 +1,15 @@
 # soilsampling <img src="man/figures/logo.png" align="right" height="139" alt="soilsampling logo" />
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/ccarbajal16/soilsampling/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ccarbajal16/soilsampling/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/ccarbajal16/soilsampling/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/ccarbajal16/soilsampling/actions/workflows/pkgdown.yaml)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Version](https://img.shields.io/github/r-package/v/ccarbajal16/soilsampling?label=version&color=green)](https://github.com/ccarbajal16/soilsampling/blob/main/DESCRIPTION)
+[![R >= 4.1.0](https://img.shields.io/badge/R-%3E%3D%204.1.0-blue.svg)](https://www.r-project.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://ccarbajal16.github.io/soilsampling/)
+<!-- badges: end -->
+
 Soil Sampling Design Methods Including Spatial Coverage, Maxvol Optimal Design, Simple Random, and Stratified Sampling
 
 ## Overview
