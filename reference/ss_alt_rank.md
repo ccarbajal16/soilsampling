@@ -38,7 +38,8 @@ ss_alt_rank(
 - target_site_id:
 
   Optional character, ID of the target site these alternatives are for;
-  stored in a `target_site_id` column.
+  stored in a `target_site_id` column. If `NULL` (default), that column
+  is filled with `NA`.
 
 ## Value
 
