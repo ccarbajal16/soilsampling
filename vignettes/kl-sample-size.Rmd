@@ -152,8 +152,11 @@ opt$optimal_sample_size
 `ss_kl_size(..., output_dir = ...)` writes CSVs and plots together. To save just the plots from a result you already have in memory (e.g. under a different naming scheme), use `ss_kl_save_plots()`:
 
 ```{r eval=FALSE}
-ss_kl_save_plots(result, output_dir = "outputs", prefix = "clhs_kl")
+ss_kl_save_plots(result, output_dir = "my_outputs", prefix = "clhs_kl")
 ```
+
+`output_dir` has no default: the function writes files, so the caller
+always chooses where they land.
 
 ## Choosing Parameters
 

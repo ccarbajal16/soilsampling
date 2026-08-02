@@ -393,7 +393,7 @@ ss_kl_optimize <- function(population_data,
 #'
 #' @examples
 #' \dontrun{
-#' res <- ss_kl_size("data/predictors.tif", output_dir = "outputs")
+#' res <- ss_kl_size("predictors.tif", output_dir = file.path(tempdir(), "kl"))
 #' res$optimal_sample_size
 #' }
 #'
@@ -511,7 +511,8 @@ ss_kl_size <- function(x,
 #'
 #' @param results List returned by [ss_kl_optimize()] or [ss_kl_size()].
 #' @param output_dir Character, directory to save plots to. Created if it
-#'   does not exist.
+#'   does not exist. Required: the caller must choose where files are
+#'   written, so this function never writes to a default location.
 #' @param prefix Character, file name prefix. Default `"kl"`.
 #'
 #' @return Character vector of file paths written (invisibly, if none were
@@ -520,12 +521,16 @@ ss_kl_size <- function(x,
 #' @examples
 #' \dontrun{
 #' res <- ss_kl_optimize(population_data)
-#' ss_kl_save_plots(res, "outputs", prefix = "clhs")
+#' ss_kl_save_plots(res, file.path(tempdir(), "kl"), prefix = "clhs")
 #' }
 #'
 #' @seealso [ss_kl_optimize()], [ss_kl_size()]
 #' @export
-ss_kl_save_plots <- function(results, output_dir = "outputs", prefix = "kl") {
+ss_kl_save_plots <- function(results, output_dir, prefix = "kl") {
+  if (missing(output_dir) || !is.character(output_dir) || length(output_dir) != 1) {
+    stop("'output_dir' must be a single directory path", call. = FALSE)
+  }
+
   if (!dir.exists(output_dir)) {
     dir.create(output_dir, recursive = TRUE)
   }

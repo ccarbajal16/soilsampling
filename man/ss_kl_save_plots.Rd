@@ -4,13 +4,14 @@
 \alias{ss_kl_save_plots}
 \title{Save KL Optimization Plots}
 \usage{
-ss_kl_save_plots(results, output_dir = "outputs", prefix = "kl")
+ss_kl_save_plots(results, output_dir, prefix = "kl")
 }
 \arguments{
 \item{results}{List returned by \code{\link[=ss_kl_optimize]{ss_kl_optimize()}} or \code{\link[=ss_kl_size]{ss_kl_size()}}.}
 
 \item{output_dir}{Character, directory to save plots to. Created if it
-does not exist.}
+does not exist. Required: the caller must choose where files are
+written, so this function never writes to a default location.}
 
 \item{prefix}{Character, file name prefix. Default \code{"kl"}.}
 }
@@ -26,7 +27,7 @@ for re-saving plots on their own, e.g. with a different prefix.
 \examples{
 \dontrun{
 res <- ss_kl_optimize(population_data)
-ss_kl_save_plots(res, "outputs", prefix = "clhs")
+ss_kl_save_plots(res, file.path(tempdir(), "kl"), prefix = "clhs")
 }
 
 }
