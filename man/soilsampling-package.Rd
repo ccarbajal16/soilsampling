@@ -133,4 +133,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Carlos Carbajal \email{ccarbajal@educagis.com}
 
+Authors:
+\itemize{
+  \item Carlos Carbajal \email{ccarbajal@educagis.com}
+}
+
 }
