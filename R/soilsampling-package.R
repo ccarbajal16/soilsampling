@@ -115,10 +115,10 @@
 #' @aliases soilsampling
 #'
 #' @importFrom sf st_geometry st_geometry_type st_crs st_is_longlat st_bbox
-#'   st_make_grid st_union st_intersects st_coordinates st_as_sf st_sf
-#'   st_sample st_nearest_feature st_sfc st_drop_geometry
+#' @importFrom sf st_make_grid st_union st_intersects st_coordinates st_as_sf
+#' @importFrom sf st_sf st_sample st_nearest_feature st_sfc st_drop_geometry
 #' @importFrom ggplot2 ggplot aes geom_raster geom_point geom_segment
-#'   coord_fixed theme_minimal labs scale_shape_manual .data
+#' @importFrom ggplot2 coord_fixed theme_minimal labs scale_shape_manual .data
 #' @importFrom stats runif var quantile na.omit
 #' @importFrom methods is
 #'
